@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Web performance en la era de la UI generativa — DevFest Guatemala 2026</title>
+    <meta name="description" content="Optimizing Web Performance in the Era of Generative UI: renderizado, DOM recycling, streaming de HTML/JSON, estado y DevTools con agentes." />
+    <link rel="icon" href="/brand/logo-icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@100;300;400;500&display=swap" />
+    <!-- En <head> (no importado desde JS): deck-stage copia las hojas de estilo a las miniaturas al iniciar. -->
+    <link rel="stylesheet" href="/src/deck/deck.css" />
+    <script>
+      // Tema antes del primer pintado (sin parpadeo): claro DevFest por defecto.
+      try {
+        const t = new URLSearchParams(location.search).get('theme') || localStorage.getItem('deck.theme');
+        if (t === 'dark') document.documentElement.dataset.theme = 'dark';
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <deck-stage width="1280" height="720">
+      <!-- ═════════════ PORTADA ═════════════ -->
+      <section data-id="portada" data-label="Portada" class="cover">
+        <div class="cover-grid">
+          <div>
+            <img class="badge-img" src="/brand/web-badge.svg" alt="Web @DevFest Guatemala" />
+            <p class="eyebrow">// Optimizing Web Performance in the Era of Generative UI</p>
+            <h1 class="cover-title md"><span>Web performance</span><span>en la era de la</span><span><span class="hl">UI generativa</span></span></h1>
+            <div class="speaker">
+              <img src="/brand/vanessa.png" alt="" />
+              <div><strong>Vanessa Aristizabal</strong><span>GDE Web &amp; Angular · GitHub Star</span></div>
+            </div>
+          </div>
+          <div class="gen-browser" aria-hidden="true">
+            <div class="chrome"><i></i><i></i><i></i><span>mercadito.gt/generando…</span></div>
+            <div class="gen-body">
+              <div class="gen-prompt">regalo de café bajo Q200</div>
+              <div class="gen-row">
+                <div class="gen-card" style="--i: 0"><b></b><em></em><em></em></div>
+                <div class="gen-card" style="--i: 1"><b></b><em></em><em></em></div>
+                <div class="gen-card" style="--i: 2"><b></b><em></em><em></em></div>
+              </div>
+              <div class="gen-row">
+                <div class="gen-card" style="--i: 3"><b></b><em></em><em></em></div>
+                <div class="gen-card" style="--i: 4"><b></b><em></em><em></em></div>
+                <div class="gen-card" style="--i: 5"><b></b><em></em><em></em></div>
+              </div>
+              <div class="gen-hud"><span>CLS 0,00</span><span>INP 64 ms</span><span>LoAF 0</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="cover-dolls" data-dolls="4" aria-hidden="true"></div>
+        <div class="weave bottom" aria-hidden="true"></div>
+      </section>
+
+      <!-- ═════════════ ÚNETE ═════════════ -->
+      <section data-id="unete" data-label="Únete">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Esta charla también es una app</p>
+          <h2 class="title">Escanea, toma notas y <span class="hl">crea tu quitapenas</span></h2>
+          <div class="grid-3" style="grid-template-columns: 1fr 0.75fr 1.2fr; align-items: start">
+            <div class="qr-card">
+              <div data-qr="live"></div>
+              <strong>Únete a la charla</strong>
+              <span data-live-url>…</span>
+            </div>
+            <div class="qr-card sm">
+              <div data-qr="repo"></div>
+              <strong>Repositorio</strong>
+              <span>web-performance-gen-ui</span>
+            </div>
+            <div class="stack">
+              <div class="grid-2" style="gap: 10px">
+                <div class="box blue"><div class="counter-big"><span data-count="players">0</span></div><small class="mono">en la sala</small></div>
+                <div class="box yellow"><div class="counter-big"><span data-count="dolls">0</span></div><small class="mono">quitapenas</small></div>
+              </div>
+              <div class="box green"><h3 class="ic"><i data-lucide="notebook-pen"></i> Notas sin perder el hilo</h3><p>Si estás escribiendo, tu celular <b>no cambia de slide</b> hasta que guardes.</p></div>
+              <div class="box red"><h3 class="ic"><i data-lucide="download"></i> Tu memoria al final</h3><p>Resumen de cada slide + tus notas + tu quitapenas.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ BIO ═════════════ -->
+      <section data-id="bio" data-label="Quién soy">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Quién soy</p>
+          <div class="bio">
+            <img class="bio-photo" src="/brand/vanessa.png" alt="Vanessa Aristizabal" />
+            <div>
+              <h2>Vanessa Aristizabal</h2>
+              <p class="sub" style="margin: 0">Software Engineer</p>
+              <ul>
+                <li>Ingeniera de Sistemas y Magíster en Ingeniería</li>
+                <li>Google Developer Expert — Web Technologies &amp; Angular</li>
+                <li>GitHub Star</li>
+                <li>Creadora de contenido</li>
+              </ul>
+              <div class="socials">
+                <span class="pill"><i data-lucide="camera"></i> Instagram <b>@vanessamarelycode</b></span>
+                <span class="pill"><i data-lucide="circle-play"></i> YouTube <b>vanessamarely</b></span>
+                <span class="pill"><i data-lucide="briefcase"></i> LinkedIn <b>vanessa-marely-aristizabal-angel</b></span>
+                <span class="pill"><i data-lucide="git-branch"></i> GitHub <b>vanessamarely</b></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ TESIS ═════════════ -->
+      <section data-id="tesis" data-label="Cada token cuesta">
+        <div class="frame center">
+          <div class="statement">
+            <img src="/brand/scallop-bracket-left.svg" alt="" />
+            <p><b>La IA ya no responde texto: responde interfaces.</b><br />Y cada token que llega es <span class="hl">trabajo en el hilo principal</span>.</p>
+            <img src="/brand/scallop-bracket-right.svg" alt="" />
+          </div>
+        </div>
+        <div class="weave bottom" aria-hidden="true"></div>
+      </section>
+
+      <!-- ═════════════ ANATOMÍA ═════════════ -->
+      <section data-id="anatomia" data-label="Anatomía de un token">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Lo que pasa cada vez que llega un token</p>
+          <h2 class="title">Anatomía de un token: <span class="hl">de la red al píxel</span></h2>
+          <div class="pipeline-wrap">
+            <div class="tokens-run" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="pipeline reveal">
+              <div class="stage" style="--i: 0"><span class="k1">1 · Red</span><span class="v">Stream</span><span class="d">SSE / fetch con chunks de texto o JSON.</span><span class="metric">TTFB · tokens/s</span></div>
+              <div class="stage blue" style="--i: 1"><span class="k1">2 · Parser</span><span class="v">JSON parcial</span><span class="d">¿Parseas todo otra vez o solo lo nuevo?</span><span class="metric">ms CPU</span></div>
+              <div class="stage green" style="--i: 2"><span class="k1">3 · Estado</span><span class="v">Store</span><span class="d">Qué cambió y quién debe enterarse.</span><span class="metric">renders</span></div>
+              <div class="stage yellow" style="--i: 3"><span class="k1">4 · Render</span><span class="v">DOM</span><span class="d">Crear vs. reutilizar nodos.</span><span class="metric">nodos</span></div>
+              <div class="stage red" style="--i: 4"><span class="k1">5 · Layout</span><span class="v">Estilo + layout</span><span class="d">Cajas que crecen y empujan.</span><span class="metric">CLS</span></div>
+              <div class="stage purple" style="--i: 5"><span class="k1">6 · Paint</span><span class="v">Frame</span><span class="d">Si el frame tarda, el clic espera.</span><span class="metric">INP · LoAF</span></div>
+            </div>
+          </div>
+          <p class="lead" style="margin-top: 22px">Optimizar = <span class="hl">menos trabajo por token</span> y agruparlo por frame.</p>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ MÉTRICAS ═════════════ -->
+      <section data-id="metricas" data-label="Métricas 2026">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Core Web Vitals · percentil 75 de usuarios reales</p>
+          <h2 class="title">Las métricas que importan <span class="hl">(y lo nuevo de 2026)</span></h2>
+          <div class="metric-cards reveal">
+            <div class="mcard blue" style="--i: 0"><span class="name">LCP · carga</span><span class="val">≤ 2,5 s</span><span class="d">¿Cuándo aparece lo principal? En UI generativa: el primer componente útil.</span></div>
+            <div class="mcard yellow" style="--i: 1"><span class="name">INP · respuesta</span><span class="val">≤ 200 ms</span><span class="d">¿El clic responde mientras el modelo sigue escribiendo? Diagnóstico: <b>LoAF</b>.</span></div>
+            <div class="mcard green" style="--i: 2"><span class="name">CLS · estabilidad</span><span class="val">≤ 0,1</span><span class="d">¿Lo que leo se queda quieto mientras llega lo nuevo?</span></div>
+          </div>
+          <div class="timeline reveal">
+            <div class="tl" style="--i: 3"><b>Chrome 151</b><span>Soft Navigations API, activada por defecto.</span></div>
+            <div class="tl" style="--i: 4"><b>Chrome 152–154</b><span>DevTools mide soft navs en Live metrics e Insights.</span></div>
+            <div class="tl" style="--i: 5"><b>Octubre 2026</b><span>CrUX publica LCP, INP y CLS experimentales con soft navs.</span></div>
+            <div class="tl" style="--i: 6"><b>Mayo 2027 (meta)</b><span>Dejan de ser experimentales; Search Console cambia.</span></div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ VILLANOS ═════════════ -->
+      <section data-id="villanos" data-label="Dónde se rompe">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Los vamos a romper (y arreglar) en la demo</p>
+          <h2 class="title">Cinco lugares donde se rompe una UI generativa</h2>
+          <div class="villains reveal">
+            <div class="villain" style="--i: 0"><div class="face"><i data-lucide="move-vertical"></i></div><h3>Layout shift</h3><p>El componente nuevo empuja lo que ya estabas leyendo. Banners que llegan tarde.</p><span class="metric">CLS</span></div>
+            <div class="villain" style="--i: 1"><div class="face"><i data-lucide="hourglass"></i></div><h3>Hilo bloqueado</h3><p>Renderizar en cada token y calcular en el hilo principal: el clic espera.</p><span class="metric">INP · LoAF</span></div>
+            <div class="villain" style="--i: 2"><div class="face"><i data-lucide="file-json"></i></div><h3>Re-parseo</h3><p><code>JSON.parse</code> de todo el buffer en cada token: O(n²).</p><span class="metric">ms CPU</span></div>
+            <div class="villain" style="--i: 3"><div class="face"><i data-lucide="trash-2"></i></div><h3>DOM desechable</h3><p><code>innerHTML</code> en cada cambio: miles de nodos y foco perdido.</p><span class="metric">nodos creados</span></div>
+            <div class="villain" style="--i: 4"><div class="face"><i data-lucide="eye-off"></i></div><h3>Navegación invisible</h3><p>La UI cambia de vista y de URL, pero nadie mide esa soft navigation.</p><span class="metric">soft navs</span></div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ 01 MEDIR ═════════════ -->
+      <section data-id="sec-medir" data-label="01 Medir con agentes" class="section-slide">
+        <div class="section-textile sec-blue" aria-hidden="true"><div class="big-icon"><div><i data-lucide="bot"></i></div></div></div>
+        <div class="frame">
+          <p class="section-num">01</p>
+          <h2 class="section-title">Medir con DevTools <span class="hl">agéntico</span></h2>
+          <p class="sub">Antes de optimizar, mide. Ahora con IA en DevTools y agentes que graban traces por ti.</p>
+        </div>
+      </section>
+
+      <!-- ═════════════ PERFORMANCE PANEL ═════════════ -->
+      <section data-id="devtools-perf" data-label="Performance panel">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Chrome DevTools · Performance</p>
+          <h2 class="title">El panel Performance en <span class="hl">2026</span></h2>
+          <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start">
+            <div class="stack reveal">
+              <div class="box blue" style="--i: 0"><h3 class="ic"><i data-lucide="activity"></i> Live metrics</h3><p>LCP, INP y CLS locales al instante, junto a los datos de campo de CrUX. Ahora también por soft navigation.</p></div>
+              <div class="box green" style="--i: 1"><h3 class="ic"><i data-lucide="lightbulb"></i> Insights</h3><p>Te dice <b>qué</b> causó el layout shift o el INP alto, y en qué vista de tu SPA.</p></div>
+              <div class="box yellow" style="--i: 2"><h3 class="ic"><i data-lucide="cpu"></i> CPU calibrada</h3><p>Overrides de nivel de CPU calibrados: reproduces "el celular de gama baja" igual cada vez.</p></div>
+            </div>
+            <div class="stack">
+              <div class="trace" aria-label="Ejemplo de trace con pistas propias">
+                <div class="row"><span class="lbl">Main</span><span class="lane"><i class="y" style="left: 2%; width: 12%">Task</i><i class="long" style="left: 18%; width: 34%">Long animation frame · 212 ms</i><i class="y" style="left: 58%; width: 8%">Task</i><i class="y" style="left: 72%; width: 6%"></i></span></div>
+                <div class="row"><span class="lbl">Layout shifts</span><span class="lane"><i class="r" style="left: 24%; width: 4%">0,18</i><i class="r" style="left: 40%; width: 3%">0,07</i></span></div>
+                <div class="row"><span class="lbl">Mercadito · Stream</span><span class="lane"><i class="b" style="left: 2%; width: 70%">stream 128 tokens</i></span></div>
+                <div class="row"><span class="lbl">Mercadito · Parser</span><span class="lane"><i class="p" style="left: 18%; width: 14%">parse O(n²)</i><i class="p" style="left: 36%; width: 12%">parse</i></span></div>
+                <div class="row"><span class="lbl">Mercadito · Render</span><span class="lane"><i class="g" style="left: 32%; width: 18%">innerHTML 1.840 nodos</i></span></div>
+                <div class="row"><span class="lbl">Soft navs</span><span class="lane"><i class="y" style="left: 76%; width: 20%">/p/cafe-huehue</i></span></div>
+              </div>
+              <p class="mono small muted" style="margin: 0">Tus pistas aparecen junto a los frames y se buscan con <b>Ctrl+F</b>.</p>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ AI ASSISTANCE ═════════════ -->
+      <section data-id="ai-assistance" data-label="AI assistance">
+        <div class="frame card-frame">
+          <p class="eyebrow">// AI assistance en DevTools (Gemini)</p>
+          <h2 class="title">Pregúntale <span class="hl">al trace</span></h2>
+          <div class="grid-2" style="grid-template-columns: 1fr 1.05fr; align-items: start">
+            <div class="stack reveal">
+              <div class="box" style="--i: 0"><h3 class="ic"><i data-lucide="mouse-pointer-click"></i> Ask AI sobre un insight</h3><p>Clic derecho en un evento o insight: Gemini lo explica con el contexto real del trace.</p></div>
+              <div class="box blue" style="--i: 1"><h3 class="ic"><i data-lucide="search"></i> Preguntas abiertas</h3><p>"¿Qué hace lento este clic?": DevTools graba el trace y busca el contexto por ti.</p></div>
+              <div class="box green" style="--i: 2"><h3 class="ic"><i data-lucide="sticky-note"></i> Anota y razona</h3><p>Usa datos de Lighthouse, muestra su razonamiento y anota el trace con los hallazgos.</p></div>
+            </div>
+            <div class="agent">
+              <div class="bar"><span>AI assistance · Performance</span><span>ejemplo ilustrativo</span></div>
+<pre><span class="u">Tú:</span> ¿Por qué el INP del botón "Ordenar" es de 480 ms?
+
+<span class="t">Gemini:</span> La interacción tiene un <b>Long Animation
+Frame de 452 ms</b>. El 91 % es <span class="t">rankProducts()</span>
+en <span class="dim">rank.ts:42</span>, que puntúa los productos de
+forma síncrona en el handler del clic.
+
+<span class="ok">Sugerencia:</span> muévelo a un Web Worker o
+divide el trabajo con <span class="t">scheduler.yield()</span> y
+pinta primero el estado "ordenando…".</pre>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ DEVTOOLS FOR AGENTS ═════════════ -->
+      <section data-id="devtools-mcp" data-label="DevTools for agents">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Chrome DevTools for agents · MCP + CLI estables</p>
+          <h2 class="title">Tu agente de código <span class="hl">también mide</span></h2>
+          <div class="grid-2" style="grid-template-columns: 0.9fr 1.1fr; align-items: start">
+            <div class="stack">
+              <div class="code sm">
+                <div class="bar"><span>mcp.json</span><span>Gemini CLI · Antigravity · Claude Code…</span></div>
+<pre>{
+  <span class="s">"mcpServers"</span>: {
+    <span class="s">"chrome-devtools"</span>: {
+      <span class="s">"command"</span>: <span class="s">"npx"</span>,
+      <span class="s">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"chrome-devtools-mcp@latest"</span>]
+    }
+  }
+}</pre>
+              </div>
+              <div class="tool-chips">
+                <span class="on">performance_start_trace</span><span class="on">performance_analyze_insight</span><span>emulate</span><span>lighthouse_audit</span><span>take_snapshot</span><span>list_webmcp_tools</span>
+              </div>
+            </div>
+            <div class="agent">
+              <div class="bar"><span>agente · terminal</span><span>ejemplo · chrome-devtools</span></div>
+<pre><span class="u">&gt;</span> Abre localhost:5174 con CPU 4x, haz clic en
+  "Ordenar" y dime qué causa el INP. Propón un fix.
+
+<span class="dim">⏺ emulate</span> { cpuThrottlingRate: 4 }
+<span class="dim">⏺ performance_start_trace</span> { reload: false }
+<span class="dim">⏺ click</span> "Ordenar por recomendación"
+<span class="dim">⏺ performance_analyze_insight</span> INPBreakdown
+<span class="t">INP 486 ms</span> · processing 451 ms en rankProducts()
+<span class="ok">✓</span> Moví el ranking a rank.worker.ts
+<span class="ok">✓</span> Nuevo trace: <span class="ok">INP 72 ms</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ PISTAS PROPIAS ═════════════ -->
+      <section data-id="tracks" data-label="Pistas propias">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Extensibility API del panel Performance</p>
+          <h2 class="title">Tu UI generativa como <span class="hl">pistas en Performance</span></h2>
+          <div class="grid-2" style="grid-template-columns: 1.1fr 0.9fr; align-items: start">
+            <div class="code">
+              <div class="bar"><span>perf-tracks.ts</span><span>user timing + detail.devtools</span></div>
+<pre><span class="k">const</span> start = performance.<span class="f">now</span>();
+<span class="f">parseChunk</span>(chunk);
+performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
+  start, end: performance.<span class="f">now</span>(),
+  <span class="mark">detail: { devtools: {</span>
+    dataType: <span class="s">'track-entry'</span>,
+    track: <span class="s">'Parser'</span>, trackGroup: <span class="s">'Mercadito · GenUI'</span>,
+    color: <span class="s">'tertiary'</span>,
+    properties: [[<span class="s">'tokens'</span>, <span class="s">'128'</span>]],
+  } },
+});</pre>
+            </div>
+            <div class="stack reveal">
+              <div class="box blue" style="--i: 0"><h3>Contexto para humanos</h3><p>Ves "parse", "render", "rank" en vez de un mar de <i>Function call</i>.</p></div>
+              <div class="box green" style="--i: 1"><h3>Contexto para la IA</h3><p>AI assistance y tus agentes leen tus nombres y propiedades al analizar el trace.</p></div>
+              <div class="box yellow" style="--i: 2"><h3>Costo casi cero</h3><p>Es User Timing: si no hay DevTools abierto, solo son marcas.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ 02 RENDERIZADO ═════════════ -->
+      <section data-id="sec-render" data-label="02 Renderizado" class="section-slide">
+        <div class="section-textile sec-red" aria-hidden="true"><div class="big-icon"><div><i data-lucide="layout-template"></i></div></div></div>
+        <div class="frame">
+          <p class="section-num">02</p>
+          <h2 class="section-title">Estrategias de <span class="hl">renderizado</span></h2>
+          <p class="sub">El modelo devuelve datos. Tu UI decide cómo se ven, cuánto miden y cuándo se pintan.</p>
+        </div>
+      </section>
+
+      <!-- ═════════════ CONTRATO ═════════════ -->
+      <section data-id="contrato" data-label="Datos, no HTML">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Contrato primero</p>
+          <h2 class="title">Datos, no HTML: <span class="hl">catálogo + schema</span></h2>
+          <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start">
+            <div class="code sm">
+              <div class="bar"><span>schema.ts</span><span>orden pensado para streaming</span></div>
+<pre><span class="k">const</span> UI_SCHEMA = {
+  type: <span class="s">'object'</span>,
+  properties: {
+    <span class="mark">hero</span>: { $ref: <span class="s">'#/hero'</span> },     <span class="c">// 1º: LCP arriba</span>
+    products: {                 <span class="c">// 2º: la grilla</span>
+      type: <span class="s">'array'</span>, maxItems: <span class="n">6</span>,
+      items: { $ref: <span class="s">'#/product'</span> } },
+    compare: { $ref: <span class="s">'#/table'</span> },  <span class="c">// 3º: el detalle</span>
+    tips: { type: <span class="s">'array'</span> },
+  },
+};
+<span class="c">// Prompt API: responseConstraint: UI_SCHEMA</span></pre>
+            </div>
+            <div class="stack reveal">
+              <div class="box blue" style="--i: 0"><h3>Catálogo cerrado</h3><p>El modelo elige entre <code>hero</code>, <code>product</code>, <code>table</code>, <code>tip</code>. Nada de HTML arbitrario.</p></div>
+              <div class="box green" style="--i: 1"><h3>Orden para el streaming</h3><p>Lo que va arriba del pliegue llega primero: el LCP no espera al detalle.</p></div>
+              <div class="box yellow" style="--i: 2"><h3>Medible y accesible</h3><p>Cada componente conoce su altura, su rol ARIA y su pista en el trace.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ RESERVA EL ESPACIO ═════════════ -->
+      <section data-id="reserva" data-label="Reserva el espacio">
+        <div class="frame card-frame">
+          <p class="eyebrow">// CLS ≈ 0 mientras el modelo escribe</p>
+          <h2 class="title">Reserva el espacio <span class="hl">antes que el contenido</span></h2>
+          <div class="grid-2" style="grid-template-columns: 0.95fr 1.05fr; align-items: start">
+            <div class="code">
+              <div class="bar"><span>slots.css</span><span>altura final desde el inicio</span></div>
+<pre>.slot-product {
+  <span class="mark">min-height: 312px;</span>
+  contain: layout paint;
+}
+.slot-product img {
+  aspect-ratio: <span class="n">4</span> / <span class="n">3</span>; width: <span class="n">100%</span>;
+}
+.slot-product .desc {
+  line-clamp: <span class="n">3</span>;
+}
+<span class="c">/* solo cuando el componente YA terminó */</span>
+.slot-done {
+  content-visibility: auto;
+  contain-intrinsic-size: auto <span class="n">312px</span>;
+}</pre>
+            </div>
+            <div class="stack reveal">
+              <div class="box green" style="--i: 0"><h3>Slots con su altura final</h3><p>El esqueleto mide lo mismo que el componente lleno: el resto no se mueve.</p></div>
+              <div class="box red" style="--i: 1"><h3>Nada entra arriba</h3><p>Banners y avisos tardíos van en un espacio reservado o abajo de lo que lees.</p></div>
+              <div class="box yellow" style="--i: 2"><h3>Ojo con content-visibility</h3><p><code>auto</code> mientras el componente aún se genera puede causar shifts: úsalo al terminar.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ 03 STREAMING ═════════════ -->
+      <section data-id="sec-stream" data-label="03 Streaming" class="section-slide">
+        <div class="section-textile sec-yellow" aria-hidden="true"><div class="big-icon"><div><i data-lucide="waves"></i></div></div></div>
+        <div class="frame">
+          <p class="section-num">03</p>
+          <h2 class="section-title">Streaming de <span class="hl">HTML y JSON</span></h2>
+          <p class="sub">Muestra valor desde el primer token sin bloquear el hilo principal.</p>
+        </div>
+      </section>
+
+      <!-- ═════════════ PARSER ═════════════ -->
+      <section data-id="parser" data-label="Parsea una sola vez">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Streaming de JSON</p>
+          <h2 class="title">Parsea cada carácter <span class="hl">una sola vez</span></h2>
+          <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start">
+            <div class="stack">
+              <div class="duo reveal">
+                <div class="side bad" style="--i: 0"><span class="l">JSON.parse(buffer) en cada token</span><span class="n">O(n²)</span><span class="l">5 KB → ~6,5 M caracteres recorridos</span></div>
+                <div class="side good" style="--i: 1"><span class="l">Parser incremental</span><span class="n">O(n)</span><span class="l">5 KB → 5 KB recorridos</span></div>
+              </div>
+              <p class="lead" style="font-size: 22px">Emite eventos (<code>field</code>, <code>item</code>) y renderiza por <span class="hl">ítem completo</span>, no por carácter.</p>
+            </div>
+            <div class="code">
+              <div class="bar"><span>stream.ts</span><span>~120 líneas sin dependencias</span></div>
+<pre><span class="k">const</span> parser = <span class="k">new</span> <span class="f">IncrementalJSON</span>();
+<span class="k">for await</span> (<span class="k">const</span> chunk <span class="k">of</span> stream) {
+  <span class="k">for</span> (<span class="k">const</span> ev <span class="k">of</span> parser.<span class="f">push</span>(chunk)) {
+    <span class="k">if</span> (ev.type === <span class="s">'item'</span>)
+      store.<span class="f">upsert</span>(ev.path, ev.value);
+  }
+}
+<span class="c">// ✗ lo que NO hacer:</span>
+<span class="c">// buffer += chunk; ui = repair(JSON.parse(buffer))</span></pre>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ UN RENDER POR FRAME ═════════════ -->
+      <section data-id="frame" data-label="Un render por frame">
+        <div class="frame card-frame">
+          <p class="eyebrow">// 70 tokens/s ≠ 70 renders/s</p>
+          <h2 class="title">Un render por frame y <span class="hl">cede el hilo</span></h2>
+          <div class="grid-2" style="grid-template-columns: 1.05fr 0.95fr; align-items: start">
+            <div class="code">
+              <div class="bar"><span>scheduler.ts</span><span>rAF + scheduler.yield()</span></div>
+<pre><span class="k">let</span> dirty = <span class="k">false</span>;
+<span class="k">function</span> <span class="f">onToken</span>(ev) {
+  store.<span class="f">apply</span>(ev);
+  <span class="k">if</span> (!dirty) { dirty = <span class="k">true</span>; <span class="f">requestAnimationFrame</span>(flush); }
+}
+<span class="k">async function</span> <span class="f">flush</span>() {
+  dirty = <span class="k">false</span>;
+  <span class="k">for</span> (<span class="k">const</span> part <span class="k">of</span> store.<span class="f">takeChanges</span>()) {
+    <span class="f">render</span>(part);
+    <span class="mark"><span class="k">await</span> scheduler.<span class="f">yield</span>();</span>  <span class="c">// deja pasar clics</span>
+  }
+}</pre>
+            </div>
+            <div class="stack">
+              <div class="code sm">
+                <div class="bar"><span>loaf.ts</span><span>¿quién bloqueó el frame?</span></div>
+<pre><span class="k">new</span> <span class="f">PerformanceObserver</span>((list) =&gt; {
+  <span class="k">for</span> (<span class="k">const</span> f <span class="k">of</span> list.<span class="f">getEntries</span>())
+    <span class="k">for</span> (<span class="k">const</span> s <span class="k">of</span> f.scripts)
+      console.<span class="f">log</span>(s.sourceFunctionName,
+                  s.duration);
+}).<span class="f">observe</span>({ type: <span class="s">'long-animation-frame'</span>,
+             buffered: <span class="k">true</span> });</pre>
+              </div>
+              <div class="box green"><h3>Resultado en la demo</h3><p>Mismo stream: de 210 renders a 8. Con CPU 4×, los LoAF del modo roto desaparecen.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ DECLARATIVE PARTIAL UPDATES ═════════════ -->
+      <section data-id="dpu" data-label="Declarative Partial Updates">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Streaming de HTML nativo · experimental</p>
+          <h2 class="title">Declarative <span class="hl">Partial Updates</span></h2>
+          <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start">
+            <div class="code">
+              <div class="bar"><span>respuesta.html</span><span>out-of-order · Chrome 150</span></div>
+<pre>&lt;ul id=<span class="s">"productos"</span>&gt;
+  <span class="mark">&lt;?start name="productos"&gt;</span>Generando…&lt;?end&gt;
+&lt;/ul&gt;
+<span class="c">&lt;!-- …el modelo sigue pensando… --&gt;</span>
+&lt;template <span class="mark">for="productos"</span>&gt;
+  &lt;li&gt;Café de Huehuetenango&lt;/li&gt;
+  &lt;?marker name=<span class="s">"productos"</span>&gt;
+&lt;/template&gt;</pre>
+            </div>
+            <div class="stack">
+              <div class="code sm">
+                <div class="bar"><span>cliente.ts</span><span>streaming APIs · con flag</span></div>
+<pre><span class="k">const</span> res = <span class="k">await</span> <span class="f">fetch</span>(<span class="s">'/genui?q=cafe'</span>);
+res.body
+  .<span class="f">pipeThrough</span>(<span class="k">new</span> <span class="f">TextDecoderStream</span>())
+  .<span class="f">pipeTo</span>(el.<span class="f">streamHTMLUnsafe</span>());</pre>
+              </div>
+              <div class="box blue"><h3>Para UI generativa en el servidor</h3><p>La página llega primero y cada componente después, en cualquier orden, sin código propio de parcheo.</p></div>
+              <div class="box yellow"><h3>Experimental</h3><p>Verifica soporte y ten fallback: <code>setHTML()</code> o tu propio renderer.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ 04 DOM ═════════════ -->
+      <section data-id="sec-dom" data-label="04 Reciclar el DOM" class="section-slide">
+        <div class="section-textile sec-green" aria-hidden="true"><div class="big-icon"><div><i data-lucide="recycle"></i></div></div></div>
+        <div class="frame">
+          <p class="section-num">04</p>
+          <h2 class="section-title">Reciclaje <span class="hl">del DOM</span></h2>
+          <p class="sub">Mover y actualizar nodos es más barato que destruirlos y crearlos de nuevo.</p>
+        </div>
+      </section>
+
+      <!-- ═════════════ CLAVES ═════════════ -->
+      <section data-id="claves" data-label="Claves estables">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Mismo stream, dos renderers</p>
+          <h2 class="title">Claves estables <span class="hl">en vez de innerHTML</span></h2>
+          <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start">
+            <div class="stack">
+              <div class="duo reveal">
+                <div class="side bad" style="--i: 0"><span class="l">innerHTML en cada cambio</span><span class="n" data-demo-num="naive">~23.500</span><span class="l">nodos creados en Mercadito</span></div>
+                <div class="side good" style="--i: 1"><span class="l">clave por id</span><span class="n" data-demo-num="keyed">~340</span><span class="l">nodos creados en Mercadito</span></div>
+              </div>
+              <div class="box yellow"><h3>Y además…</h3><p>Se conserva el foco, el hover y las imágenes ya decodificadas. Lo que cambia de orden se anima con View Transitions.</p></div>
+            </div>
+            <div class="code">
+              <div class="bar"><span>keyed.ts</span><span>actualiza solo lo que cambió</span></div>
+<pre><span class="k">const</span> nodes = <span class="k">new</span> <span class="f">Map</span>&lt;<span class="p">string</span>, <span class="p">HTMLElement</span>&gt;();
+
+<span class="k">function</span> <span class="f">upsert</span>(item: <span class="p">Product</span>) {
+  <span class="k">let</span> el = nodes.<span class="f">get</span>(<span class="mark">item.id</span>);
+  <span class="k">if</span> (!el) nodes.<span class="f">set</span>(item.id, (el = <span class="f">createCard</span>(item)));
+  <span class="f">patchText</span>(el, item);   <span class="c">// textContent, no HTML</span>
+}
+
+<span class="c">// reordenar con transición (Chrome 147+)</span>
+grid.<span class="f">startViewTransition</span>?.(() =&gt; <span class="f">sortCards</span>());</pre>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ LISTAS LARGAS ═════════════ -->
+      <section data-id="reciclaje" data-label="Listas largas">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Cuando la IA genera 500 resultados</p>
+          <h2 class="title">Recicla, virtualiza, <span class="hl">contén</span></h2>
+          <div class="grid-3 reveal" style="align-items: stretch">
+            <div class="box blue" style="--i: 0"><h3 class="ic"><i data-lucide="recycle"></i> Pool de nodos</h3><p>Solo existen los nodos visibles. Los que salen por arriba se reutilizan para los que entran por abajo: el DOM no crece aunque la lista sí.</p></div>
+            <div class="box green" style="--i: 1"><h3 class="ic"><i data-lucide="eye"></i> content-visibility</h3><p>Secciones generadas que ya terminaron y están fuera de pantalla no se pintan, con <code>contain-intrinsic-size</code> para no saltar.</p></div>
+            <div class="box yellow" style="--i: 2"><h3 class="ic"><i data-lucide="memory-stick"></i> Mide la memoria</h3><p>Una UI generativa vive horas abierta. DevTools for agents ya analiza heap snapshots y nodos desconectados.</p></div>
+          </div>
+          <p class="lead" style="margin-top: 22px">Regla: el tamaño del DOM depende de <span class="hl">la pantalla</span>, no de la respuesta del modelo.</p>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ 05 ESTADO ═════════════ -->
+      <section data-id="sec-estado" data-label="05 Estado" class="section-slide">
+        <div class="section-textile sec-purple" aria-hidden="true"><div class="big-icon"><div><i data-lucide="route"></i></div></div></div>
+        <div class="frame">
+          <p class="section-num">05</p>
+          <h2 class="section-title">Estado y <span class="hl">navegación</span></h2>
+          <p class="sub">Varios streams a la vez: el estado vive fuera del render y cada componente se suscribe solo a lo suyo.</p>
+        </div>
+      </section>
+
+      <!-- ═════════════ ESTADO ═════════════ -->
+      <section data-id="estado" data-label="Estado fuera del render">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Un token actualiza un componente, no la página</p>
+          <h2 class="title">Estado fuera del render, <span class="hl">suscripciones finas</span></h2>
+          <div class="flow reveal" style="grid-template-columns: 1fr 60px 1.2fr 60px 1fr">
+            <div class="stack" style="--i: 0">
+              <div class="node blue"><div class="k1">Stream A</div><div class="v">Productos</div><div class="d">borrador → confirmado</div></div>
+              <div class="node green"><div class="k1">Stream B</div><div class="v">Comparativa</div><div class="d">llega en paralelo</div></div>
+            </div>
+            <div class="arrow" style="--i: 1"><span>eventos</span></div>
+            <div class="node yellow" style="--i: 2"><div class="k1">Store por stream</div><div class="v">draft · committed · previous</div><div class="d">Lo anterior se queda visible hasta su reemplazo: nunca pantalla en blanco.</div></div>
+            <div class="arrow" style="--i: 3"><span>por clave</span></div>
+            <div class="stack" style="--i: 4">
+              <div class="node"><div class="k1">Componente</div><div class="v">subscribe(id)</div><div class="d">signals / useSyncExternalStore</div></div>
+              <div class="node red"><div class="k1">Derivado</div><div class="v">Worker</div><div class="d">orden, filtros y totales en código, fuera del hilo.</div></div>
+            </div>
+          </div>
+          <p class="lead" style="margin-top: 24px">La IA decide <b>qué</b> mostrar. <span class="hl">El código calcula</span> todo lo demás.</p>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ SOFT NAVS ═════════════ -->
+      <section data-id="softnav" data-label="Soft navigations">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Interacción + cambio de URL + pintura visible</p>
+          <h2 class="title">La UI generativa también navega: <span class="hl">mide las soft navs</span></h2>
+          <div class="grid-2" style="grid-template-columns: 1.1fr 0.9fr; align-items: start">
+            <div class="code">
+              <div class="bar"><span>soft-navs.ts</span><span>Chrome 151+</span></div>
+<pre><span class="k">new</span> <span class="f">PerformanceObserver</span>((list) =&gt; {
+  <span class="k">for</span> (<span class="k">const</span> nav <span class="k">of</span> list.<span class="f">getEntries</span>())
+    <span class="f">startView</span>(nav.name, nav.<span class="mark">interactionId</span>);
+}).<span class="f">observe</span>({ type: <span class="s">'soft-navigation'</span>, buffered: <span class="k">true</span> });
+
+<span class="k">new</span> <span class="f">PerformanceObserver</span>((list) =&gt; {
+  <span class="k">for</span> (<span class="k">const</span> p <span class="k">of</span> list.<span class="f">getEntries</span>())
+    <span class="k">if</span> (p.interactionId === view.interactionId)
+      <span class="f">recordLcp</span>(p);
+}).<span class="f">observe</span>({ type: <span class="s">'interaction-contentful-paint'</span>,
+             buffered: <span class="k">true</span> });</pre>
+            </div>
+            <div class="stack">
+              <div class="code sm">
+                <div class="bar"><span>rum.ts</span><span>web-vitals v6</span></div>
+<pre><span class="k">for</span> (<span class="k">const</span> on <span class="k">of</span> [onLCP, onINP, onCLS])
+  <span class="f">on</span>(send, { <span class="mark">reportSoftNavs: <span class="k">true</span></span> });</pre>
+              </div>
+              <div class="box blue"><h3>Atribuye bien</h3><p>Asocia cada pintura a su vista con <code>interactionId</code>, no con <code>navigationId</code>.</p></div>
+              <div class="box green"><h3>Segmenta en tu RUM</h3><p>Navegación dura vs. suave: no mezcles sus LCP.</p></div>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ DEMO ═════════════ -->
+      <section data-id="demo" data-label="Demo · Mercadito">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Demo · 10 minutos</p>
+          <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start; flex: 1">
+            <div class="stack">
+              <h2 class="title" style="margin: 0">Mercadito: <span class="hl">laboratorio</span> de performance</h2>
+              <p class="lead" style="font-size: 21px">Un asistente de compras generativo para artesanías, café y cacao de Guatemala. Cinco interruptores: <b>roto ↔ arreglado</b>.</p>
+              <div class="stack" style="grid-auto-flow: column; justify-content: start; gap: 10px">
+                <a class="pill dark" data-demo-link="/" target="_blank" rel="noreferrer">Abrir Mercadito <i data-lucide="arrow-up-right"></i></a>
+                <a class="pill" data-demo-link="/compare.html" target="_blank" rel="noreferrer">Roto vs. arreglado <i data-lucide="arrow-up-right"></i></a>
+              </div>
+              <div class="gen-hud" style="margin-top: 6px"><span>CLS</span><span>INP · LoAF</span><span>nodos · ms parseo · soft navs</span></div>
+            </div>
+            <div class="switches reveal">
+              <div class="switch-row" style="--i: 0"><span class="tg"></span><b>Reservar espacio</b><span>CLS</span></div>
+              <div class="switch-row" style="--i: 1"><span class="tg"></span><b>Parser incremental</b><span>ms CPU</span></div>
+              <div class="switch-row" style="--i: 2"><span class="tg"></span><b>Un render por frame</b><span>LoAF</span></div>
+              <div class="switch-row" style="--i: 3"><span class="tg"></span><b>Claves estables</b><span>nodos</span></div>
+              <div class="switch-row" style="--i: 4"><span class="tg"></span><b>Ranking en un Worker</b><span>INP</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ RECETA ═════════════ -->
+      <section data-id="receta" data-label="Receta con DevTools">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Lo que acabamos de hacer, en 5 pasos</p>
+          <h2 class="title">Receta: <span class="hl">del síntoma al arreglo</span></h2>
+          <div class="steps reveal">
+            <div class="step-card" style="--i: 0"><h3>Reproduce</h3><p>CPU calibrada y red lenta. Mismo prompt, mismo stream.</p></div>
+            <div class="step-card" style="--i: 1"><h3>Graba y lee Insights</h3><p>Layout shifts, INP breakdown, LoAF y tus pistas propias.</p></div>
+            <div class="step-card" style="--i: 2"><h3>Pregúntale a la IA</h3><p>Ask AI sobre el insight: causa y sugerencia con contexto.</p></div>
+            <div class="step-card" style="--i: 3"><h3>Delega al agente</h3><p>DevTools MCP: aplica el fix y <b>vuelve a medir</b>. <code>performance_start_trace</code></p></div>
+            <div class="step-card" style="--i: 4"><h3>Confirma en campo</h3><p>RUM con web-vitals y CrUX, incluidas las soft navigations.</p></div>
+          </div>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ MURO DE QUITAPENAS ═════════════ -->
+      <section data-id="muro" data-label="Muro de quitapenas">
+        <div class="frame">
+          <div class="q-head" style="align-items: center; margin-bottom: 10px">
+            <div>
+              <p class="eyebrow">// Le contamos nuestras penas de performance</p>
+              <h2 class="title" style="margin: 0">El muro de quitapenas · <span data-count="dolls">0</span></h2>
+            </div>
+            <p class="mono small muted" style="max-width: 380px; margin: 0">Se dibujan en cada dispositivo con SVG: al muro solo viajan las opciones (pocos bytes).</p>
+          </div>
+          <div class="pena-top" data-pena-top></div>
+          <div class="doll-wall" data-doll-wall style="margin-top: 12px"></div>
+        </div>
+        <div class="weave bottom" aria-hidden="true"></div>
+      </section>
+
+      <!-- ═════════════ CHECKLIST ═════════════ -->
+      <section data-id="checklist" data-label="Checklist">
+        <div class="frame card-frame">
+          <p class="eyebrow">// Para llevar · también en tu memoria descargable</p>
+          <h2 class="title">10 reglas para una <span class="hl">UI generativa rápida</span></h2>
+          <ol class="checklist" data-checklist></ol>
+        </div>
+        <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
+      </section>
+
+      <!-- ═════════════ GRACIAS ═════════════ -->
+      <section data-id="gracias" data-label="Gracias" class="cover">
+        <div class="cover-grid" style="grid-template-columns: 1.1fr 0.9fr">
+          <div style="pointer-events: auto">
+            <p class="eyebrow">// Gracias, DevFest Guatemala</p>
+            <h2 class="cover-title" style="font-size: 92px"><span>¡Maltiox!</span><span class="hl" style="font-size: 64px">¿Preguntas?</span></h2>
+            <p class="cover-sub">“Gracias” en k’iche’. En tu celular: <b>descarga tu memoria</b> con el resumen, tus notas y tu quitapenas.</p>
+            <div class="stack" style="margin-top: 22px; grid-auto-flow: column; justify-content: start">
+              <span class="pill"><i data-lucide="camera"></i> <b>@vanessamarelycode</b></span>
+              <span class="pill"><i data-lucide="git-branch"></i> <b>vanessamarely</b></span>
+            </div>
+          </div>
+          <div class="grid-2" style="grid-template-columns: auto auto; justify-content: end; gap: 18px; pointer-events: auto">
+            <div class="qr-card sm"><div data-qr="live"></div><strong>Tu memoria</strong><span>/live</span></div>
+            <div class="qr-card sm"><div data-qr="repo"></div><strong>Repo</strong><span>web-performance-gen-ui</span></div>
+          </div>
+        </div>
+        <div class="cover-dolls" data-dolls="6" aria-hidden="true"></div>
+        <div class="weave bottom" aria-hidden="true"></div>
+      </section>
+    </deck-stage>
+
+    <div class="reactions" aria-hidden="true"></div>
+    <span class="presenter-badge" hidden>● EN VIVO</span>
+    <div class="deck-menu">
+      <button class="deck-menu-btn" type="button" aria-expanded="false" aria-controls="deck-menu-panel" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+      <div class="deck-menu-panel" id="deck-menu-panel" hidden></div>
+    </div>
+
+    <script src="/deck-stage.js"></script>
+    <script type="module" src="/src/deck/main.ts"></script>
+  </body>
+</html>

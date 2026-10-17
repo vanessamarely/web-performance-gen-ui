@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mercadito · roto vs. arreglado</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@300;400;500&display=optional" />
+  </head>
+  <body class="compare-page">
+    <header class="cmp-head">
+      <h1>Mismo stream, <span class="hl">dos renderers</span></h1>
+      <form data-cmp><input value="Regalo de café bajo Q200" aria-label="Petición" /><button type="submit">Generar en ambos</button></form>
+    </header>
+    <div class="cmp-grid">
+      <section><h2 class="bad">Roto <small>innerHTML · JSON.parse en cada token · sin espacio reservado · ranking en el hilo principal</small></h2><iframe title="Mercadito roto" src="/?embed&preset=broken"></iframe></section>
+      <section><h2 class="good">Arreglado <small>claves estables · parser incremental · slots · rAF + yield · Worker</small></h2><iframe title="Mercadito arreglado" src="/?embed&preset=fixed"></iframe></section>
+    </div>
+    <table class="cmp-table" data-table></table>
+    <script type="module" src="/src/compare.ts"></script>
+  </body>
+</html>

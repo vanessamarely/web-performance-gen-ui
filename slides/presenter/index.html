@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Consola de la presentadora · Web performance en la era de la UI generativa</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/brand/logo-icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@300;400;500&display=swap" />
+    <link rel="stylesheet" href="/src/presenter/presenter.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <div class="brand"><img src="/brand/logo-icon.svg" alt="" width="34" height="18" /><b>Consola</b><span class="mono" data-mode>conectando…</span></div>
+      <div class="timer">
+        <span class="mono" data-clock>00:00</span>
+        <span class="pace" data-pace></span>
+        <button type="button" data-timer>Iniciar</button>
+        <button type="button" data-reset class="ghost">Reiniciar</button>
+      </div>
+      <div class="stats">
+        <span data-stat="players">0 en la sala</span>
+        <span data-stat="dolls">0 quitapenas</span>
+        <span data-stat="questions">0 preguntas</span>
+        <span data-stat="live" class="off">sin transmitir</span>
+      </div>
+    </header>
+    <main class="grid">
+      <section class="now" aria-live="polite">
+        <p class="kicker"><span data-pos>— / —</span> · <span data-section></span> · objetivo <b data-target>0:00</b></p>
+        <h1 data-title>Abre el deck para empezar</h1>
+        <ul class="summary" data-summary></ul>
+        <div class="notes"><p class="kicker">Guion</p><p data-notes>La consola sigue al deck abierto en este navegador. Usa ← / → aquí o en el deck.</p></div>
+        <pre class="code" data-code hidden></pre>
+      </section>
+      <aside class="side">
+        <div class="next"><p class="kicker">Siguiente</p><h2 data-next>—</h2><p class="muted" data-next-sum></p></div>
+        <div class="controls">
+          <button type="button" data-prev>← Anterior</button>
+          <button type="button" data-nextbtn class="primary">Siguiente →</button>
+        </div>
+        <div class="links">
+          <a data-open-deck target="wpgu-deck">Abrir deck (presentadora)</a>
+          <a data-open-live target="_blank" rel="noreferrer">App de asistentes</a>
+          <a data-open-demo target="_blank" rel="noreferrer">Demo Mercadito</a>
+        </div>
+        <ol class="slides" data-slides></ol>
+      </aside>
+    </main>
+    <script type="module" src="/src/presenter/main.ts"></script>
+  </body>
+</html>

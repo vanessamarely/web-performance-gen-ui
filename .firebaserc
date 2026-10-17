@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "web-performance-gen-ui"
+  },
+  "targets": {
+    "web-performance-gen-ui": {
+      "hosting": {
+        "slides": ["web-performance-gen-ui-slides"],
+        "demo": ["web-performance-gen-ui-demo"]
+      }
+    }
+  },
+  "etags": {}
+}

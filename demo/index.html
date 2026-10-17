@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mercadito · UI generativa con laboratorio de performance</title>
+    <meta name="description" content="Demo de la charla Web performance en la era de la UI generativa (DevFest Guatemala 2026): rompe y arregla CLS, INP, LoAF y soft navigations, y mídelo con DevTools." />
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@300;400;500&display=optional" />
+  </head>
+  <body>
+    <a class="skip" href="#genui">Saltar a los resultados</a>
+    <header class="site">
+      <div class="weave" aria-hidden="true"></div>
+      <div class="bar">
+        <a class="logo" href="/" data-home-logo><img src="/favicon.svg" alt="" width="32" height="32" /><span>Mercadito</span></a>
+        <form class="prompt" data-prompt role="search">
+          <label class="sr" for="q">¿Qué buscas?</label>
+          <input id="q" name="q" autocomplete="off" placeholder="Ej.: regalo de café bajo Q200" />
+          <button type="submit">Generar</button>
+        </form>
+        <button type="button" class="lab-toggle" data-lab-toggle aria-expanded="false" aria-controls="lab">Laboratorio <kbd>D</kbd></button>
+      </div>
+      <div class="suggest" data-suggest></div>
+      <p class="engine"><span>Motor: <b data-engine></b></span> · <span data-webmcp></span> · productos y precios ficticios</p>
+    </header>
+    <main id="genui" class="genui" aria-live="polite" aria-busy="false"></main>
+    <p class="sr" data-announce role="status"></p>
+    <aside id="lab" class="lab" hidden aria-label="Laboratorio de performance"></aside>
+    <div id="hud"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

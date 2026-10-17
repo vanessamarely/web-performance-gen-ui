@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#f0f0f0" />
+    <title>Web performance en la era de la UI generativa · en vivo</title>
+    <meta name="description" content="Sigue la charla en tu celular: notas, tu quitapenas y tu memoria descargable. DevFest Guatemala 2026." />
+    <link rel="icon" href="/brand/logo-icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto+Mono:wght@300;400;500&display=swap" />
+    <link rel="stylesheet" href="/src/live/live.css" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="./"><img src="/brand/logo-icon.svg" alt="" width="34" height="18" /><span>Web perf · <b>UI generativa</b></span></a>
+      <span class="me" data-me hidden></span>
+    </header>
+    <div class="menu">
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-panel" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+      <nav class="menu-panel" id="menu-panel" hidden aria-label="Menú">
+        <button type="button" data-go="live"><i data-lucide="radio"></i> En vivo</button>
+        <button type="button" data-go="doll"><i data-lucide="sparkles"></i> Mi quitapenas</button>
+        <button type="button" data-go="notes"><i data-lucide="notebook-pen"></i> Mis notas y memoria</button>
+      </nav>
+    </div>
+
+    <p class="status" data-status role="status">Conectando…</p>
+    <div class="hold" data-hold hidden role="status" aria-live="polite"></div>
+    <main id="screen"></main>
+
+    <nav class="reactions-bar" aria-label="Reacciones" data-reactions></nav>
+    <script type="module" src="/src/live/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+rules_version = '2';
+
+// Modelo de datos (una sesión por charla):
+//   sessions/{sid}                 ← slide actual { index, total, id, label, kind }. Solo la presentadora escribe.
+//   sessions/{sid}/players/{uid}   ← apodo (generado, no texto libre)
+//   sessions/{sid}/reactions/{uid} ← última reacción enviada (limitada a 1 cada ~0,8 s)
+//   sessions/{sid}/dolls/{uid}     ← quitapenas publicado en el muro (solo opciones, sin imagen)
+//   sessions/{sid}/questions/{id}  ← dudas del público: SOLO la presentadora las lee (nada de texto libre en el proyector)
+//
+// Las NOTAS de cada asistente nunca salen de su celular: no hay colección para ellas.
+// Todo el público entra con Auth anónima: no pedimos datos personales.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Cambia este id por el de quien presenta (GET https://api.github.com/users/<login> → "id").
+    function isPresenter() {
+      return request.auth != null
+        && request.auth.token.firebase.identities.keys().hasAny(['github.com'])
+        && request.auth.token.firebase.identities['github.com'][0] == '4331491';
+    }
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function onlyKeys(allowed) {
+      return request.resource.data.keys().hasOnly(allowed);
+    }
+
+    function smallInt(v, max) {
+      return v is int && v >= 0 && v <= max;
+    }
+
+    match /sessions/{sid} {
+      allow read: if true;
+      allow write: if isPresenter();
+
+      match /players/{uid} {
+        allow read: if true;
+        allow create, update: if isOwner(uid) && onlyKeys(['name', 'at'])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() > 0 && request.resource.data.name.size() <= 32;
+        allow delete: if isPresenter();
+      }
+
+      match /reactions/{uid} {
+        allow read: if true;
+        allow create: if isOwner(uid) && onlyKeys(['r', 'at', 'n'])
+          && request.resource.data.r in ['fire', 'heart', 'mind', 'ask'];
+        allow update: if isOwner(uid) && onlyKeys(['r', 'at', 'n'])
+          && request.resource.data.r in ['fire', 'heart', 'mind', 'ask']
+          && request.time > resource.data.at + duration.value(800, 'ms');
+        allow delete: if isPresenter();
+      }
+
+      match /questions/{id} {
+        allow read, delete: if isPresenter();
+        allow create: if request.auth != null
+          && onlyKeys(['uid', 'name', 'text', 'slide', 'at'])
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.at == request.time
+          && request.resource.data.text is string
+          && request.resource.data.text.size() > 0 && request.resource.data.text.size() <= 280
+          && request.resource.data.name is string && request.resource.data.name.size() <= 32
+          && request.resource.data.slide is string && request.resource.data.slide.size() <= 80;
+      }
+
+      match /dolls/{uid} {
+        allow read: if true;
+        allow create: if isOwner(uid) && validDoll() && request.resource.data.hidden == false;
+        allow update: if (isOwner(uid) && validDoll() && request.resource.data.hidden == resource.data.hidden)
+          || (isPresenter() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['hidden']));
+        allow delete: if isOwner(uid) || isPresenter();
+      }
+
+      function validDoll() {
+        let d = request.resource.data;
+        let o = d.opts;
+        return d.keys().hasOnly(['name', 'pena', 'opts', 'createdAt', 'hidden'])
+          && d.name is string && d.name.size() > 0 && d.name.size() <= 24
+          && smallInt(d.pena, 20)
+          && o is map
+          && o.keys().hasOnly(['traje', 'patron', 'cabello', 'piel', 'accesorio', 'expresion'])
+          && smallInt(o.traje, 9) && smallInt(o.patron, 9) && smallInt(o.cabello, 9)
+          && smallInt(o.piel, 9) && smallInt(o.accesorio, 9) && smallInt(o.expresion, 9);
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
