@@ -7,7 +7,7 @@
 import QRCode from 'qrcode';
 import { createElement, Flame, Heart, Brain, MessageCircleQuestion, type IconNode } from 'lucide';
 import { SLIDE_BY_ID } from '../shared/content';
-import { REPO_URL, SESSION_ID, withSessionParams } from '../shared/config';
+import { REPO_URL, SESSION_ID, prettyUrl, publicLiveUrl } from '../shared/config';
 import { PENAS, quitapenasSVG } from '../shared/quitapenas';
 import { getRealtime, REACTIONS, type AudienceQuestion, type DollData, type Reaction } from '../shared/realtime';
 
@@ -35,12 +35,12 @@ export type PresenterMsg =
 
 export async function initLive(stage: DeckStage, sections: HTMLElement[]) {
   // QR (no dependen de la conexión)
-  const liveUrl = withSessionParams('/live/');
+  const liveUrl = publicLiveUrl();
   const qr = (text: string) => QRCode.toString(text, { type: 'svg', margin: 1, errorCorrectionLevel: 'M', color: { dark: '#1e1e1e', light: '#ffffff' } });
   const [qrLive, qrRepo] = await Promise.all([qr(liveUrl), qr(REPO_URL)]);
   document.querySelectorAll('[data-qr="live"]').forEach((el) => (el.innerHTML = qrLive));
   document.querySelectorAll('[data-qr="repo"]').forEach((el) => (el.innerHTML = qrRepo));
-  document.querySelectorAll('[data-live-url]').forEach((el) => (el.textContent = liveUrl.replace(/^https?:\/\//, '').replace(/\?$/, '')));
+  document.querySelectorAll('[data-live-url]').forEach((el) => (el.textContent = prettyUrl(liveUrl)));
   dispatchEvent(new Event('tweakchange'));
 
   const rt = await getRealtime();

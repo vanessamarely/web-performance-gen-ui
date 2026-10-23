@@ -123,23 +123,36 @@
         <div class="weave bottom" aria-hidden="true"></div>
       </section>
 
-      <!-- ═════════════ ANATOMÍA ═════════════ -->
-      <section data-id="anatomia" data-label="Anatomía de un token">
+      <!-- ═════════════ ¿QUÉ ES WEB PERFORMANCE? ═════════════ -->
+      <section data-id="que-es-perf" data-label="¿Qué es web performance?">
         <div class="frame card-frame">
-          <p class="eyebrow">// Lo que pasa cada vez que llega un token</p>
-          <h2 class="title">Anatomía de un token: <span class="hl">de la red al píxel</span></h2>
-          <div class="pipeline-wrap">
-            <div class="tokens-run" aria-hidden="true"><i></i><i></i><i></i></div>
-            <div class="pipeline reveal">
-              <div class="stage" style="--i: 0"><span class="k1">1 · Red</span><span class="v">Stream</span><span class="d">SSE / fetch con chunks de texto o JSON.</span><span class="metric">TTFB · tokens/s</span></div>
-              <div class="stage blue" style="--i: 1"><span class="k1">2 · Parser</span><span class="v">JSON parcial</span><span class="d">¿Parseas todo otra vez o solo lo nuevo?</span><span class="metric">ms CPU</span></div>
-              <div class="stage green" style="--i: 2"><span class="k1">3 · Estado</span><span class="v">Store</span><span class="d">Qué cambió y quién debe enterarse.</span><span class="metric">renders</span></div>
-              <div class="stage yellow" style="--i: 3"><span class="k1">4 · Render</span><span class="v">DOM</span><span class="d">Crear vs. reutilizar nodos.</span><span class="metric">nodos</span></div>
-              <div class="stage red" style="--i: 4"><span class="k1">5 · Layout</span><span class="v">Estilo + layout</span><span class="d">Cajas que crecen y empujan.</span><span class="metric">CLS</span></div>
-              <div class="stage purple" style="--i: 5"><span class="k1">6 · Paint</span><span class="v">Frame</span><span class="d">Si el frame tarda, el clic espera.</span><span class="metric">INP · LoAF</span></div>
+          <p class="eyebrow">// Antes de optimizar: ¿qué estamos midiendo?</p>
+          <h2 class="title">¿Qué es <span class="hl">web performance</span>?</h2>
+          <p class="lead perf-def">Qué tan rápida y estable <b>se siente</b> una web para quien la usa. Se resume en tres preguntas:</p>
+          <div class="perf-qs reveal">
+            <div class="perf-q blue" style="--i: 0">
+              <span class="ico"><i data-lucide="eye"></i></span>
+              <p class="q">“¿Ya cargó?”</p>
+              <p class="m"><b>LCP</b> · Largest Contentful Paint</p>
+              <p class="d">Cuándo aparece lo más importante de la pantalla.</p>
+            </div>
+            <div class="perf-q yellow" style="--i: 1">
+              <span class="ico"><i data-lucide="mouse-pointer-click"></i></span>
+              <p class="q">“¿Me hizo caso?”</p>
+              <p class="m"><b>INP</b> · Interaction to Next Paint</p>
+              <p class="d">Cuánto tarda la pantalla en responder a un clic o una tecla.</p>
+            </div>
+            <div class="perf-q green" style="--i: 2">
+              <span class="ico"><i data-lucide="move-vertical"></i></span>
+              <p class="q">“¿Se quedó quieto?”</p>
+              <p class="m"><b>CLS</b> · Cumulative Layout Shift</p>
+              <p class="d">Cuánto se mueve lo que ya estabas viendo.</p>
             </div>
           </div>
-          <p class="lead" style="margin-top: 22px">Optimizar = <span class="hl">menos trabajo por token</span> y agruparlo por frame.</p>
+          <div class="perf-measure reveal">
+            <div class="pm" style="--i: 3"><span class="ico"><i data-lucide="flask-conical"></i></span><div><b>Laboratorio</b><span>Tu equipo, condiciones controladas: DevTools y Lighthouse. Para encontrar la causa.</span></div></div>
+            <div class="pm" style="--i: 4"><span class="ico"><i data-lucide="users"></i></span><div><b>Campo</b><span>Usuarios reales: CrUX y web-vitals. Se aprueba si el <mark class="p75">p75</mark> (3 de cada 4 visitas) está en “bueno”.</span></div></div>
+          </div>
         </div>
         <div class="notch"><img src="/brand/logo-gdg-stacked.svg" alt="Google Developer Groups" /></div>
       </section>

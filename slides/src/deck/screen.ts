@@ -6,7 +6,7 @@
 // Se activa con la tecla E, el menú o ?screen=event, y se recuerda en este navegador.
 import QRCode from 'qrcode';
 import { SLIDE_BY_ID } from '../shared/content';
-import { withSessionParams } from '../shared/config';
+import { prettyUrl, publicLiveUrl } from '../shared/config';
 
 export const EVENT_SCREEN = { w: 1680, h: 672 };
 const KEY = 'deck.screen';
@@ -35,11 +35,11 @@ export function initEventScreen(stage: DeckStage, sections: HTMLElement[]) {
     </aside>`;
   document.body.append(frame);
 
-  const liveUrl = withSessionParams('/live/');
+  const liveUrl = publicLiveUrl();
   void QRCode.toString(liveUrl, { type: 'svg', margin: 1, errorCorrectionLevel: 'M', color: { dark: '#1e1e1e', light: '#ffffff' } }).then((svg) => {
     frame.querySelector('[data-band-qr]')!.innerHTML = svg;
   });
-  frame.querySelector('[data-band-url]')!.textContent = liveUrl.replace(/^https?:\/\//, '').replace(/\?$/, '');
+  frame.querySelector('[data-band-url]')!.textContent = prettyUrl(liveUrl);
 
   let on = false;
   let addedNoRail = false;

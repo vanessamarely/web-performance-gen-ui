@@ -740,3 +740,32 @@ section:has(.weave.bottom) .footer { bottom: 40px; }
 .band-progress { width: 78%; height: calc(14px * var(--scr-k, 1)); overflow: hidden; padding: 0; }
 .band-progress i { display: block; height: 100%; width: 0; background: #1e1e1e; transition: width 300ms; }
 :root[data-event-screen] .deck-menu-btn { opacity: 0.15; }
+
+/* ── Slide 5: ¿Qué es web performance? ─────────────── */
+.perf-def { text-align: center; margin: 0 auto 18px; font-size: 24px; }
+.perf-qs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.perf-q { position: relative; border: var(--lw) solid var(--line); border-radius: var(--r-md); padding: 16px 18px 14px; background: var(--surface); display: grid; gap: 4px; }
+.perf-q.blue { background: var(--p-blue); } .perf-q.yellow { background: var(--p-yellow); } .perf-q.green { background: var(--p-green); }
+.perf-q .ico { position: absolute; top: 14px; right: 14px; width: 42px; height: 42px; border-radius: 12px; border: var(--lw) solid var(--line); background: var(--surface); display: grid; place-items: center; }
+.perf-q .ico svg { width: 24px; height: 24px; }
+.perf-q p { margin: 0; }
+.perf-q .q { font-size: 30px; font-weight: 700; line-height: 1.05; padding-right: 48px; }
+.perf-q .m { font: var(--mono-w) 15px var(--mono); margin-top: 6px !important; }
+.perf-q .m b { font-weight: 700; font-size: 17px; }
+.perf-q .d { font-size: 17px; line-height: 1.3; color: var(--ink-dim); }
+.perf-measure { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0 0; padding-right: 285px; }
+.pm { display: flex; gap: 10px; align-items: flex-start; border: var(--lw) solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; background: var(--surface); }
+.pm .ico svg { width: 26px; height: 26px; }
+.pm b { display: block; font-size: 18px; }
+.pm span { font-size: 14.5px; line-height: 1.3; color: var(--ink-dim); }
+.pm.p75 { flex-direction: column; gap: 2px; background: var(--ht-yellow); color: #1e1e1e; }
+.pm.p75 b { font: 500 28px var(--mono); }
+.pm.p75 span { color: #1e1e1e; }
+:root[data-theme='dark'] .perf-q .q, :root[data-theme='dark'] .perf-q .m { color: var(--ink); }
+@media (max-width: 640px) { .perf-qs, .perf-measure { grid-template-columns: minmax(0, 1fr) !important; padding-right: 0; } .perf-q .q { font-size: 24px; } }
+
+.pm mark.p75 { font: 500 15px var(--mono); padding: 0 6px; border-radius: 6px; background: var(--ht-yellow); color: #1e1e1e; }
+/* Slides altos: el bloque centrado no debe entrar en la esquina del logo GDG. */
+section[data-id='bio'] .card-frame { padding-bottom: 150px; }
+section[data-id='villanos'] .villain { min-height: 250px; }
+section[data-id='villanos'] .card-frame { padding-bottom: 130px; }

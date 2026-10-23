@@ -12,6 +12,7 @@ import {
   Eye,
   EyeOff,
   FileJson,
+  FlaskConical,
   GitBranch,
   Hourglass,
   LayoutTemplate,
@@ -25,11 +26,12 @@ import {
   Search,
   StickyNote,
   Trash2,
+  Users,
   Waves,
   createIcons,
 } from 'lucide';
 import { CHECKLIST, SLIDE_BY_ID } from '../shared/content';
-import { DEMO_URL, REPO_URL, withSessionParams } from '../shared/config';
+import { DEMO_URL, REPO_URL, publicLiveUrl, withSessionParams } from '../shared/config';
 import { quitapenasSVG, randomDoll } from '../shared/quitapenas';
 import { animateNotchLogos } from './gdg-logo';
 import { initLive } from './live';
@@ -113,7 +115,7 @@ let current = Math.max(0, sections.findIndex((s) => s.hasAttribute('data-deck-ac
 menu.innerHTML = `
   <div class="group">Enlaces</div>
   <a href="${withSessionParams('/presenter/')}" target="_blank" rel="noreferrer">Consola de la presentadora <kbd>P</kbd></a>
-  <a href="${withSessionParams('/live/')}" target="_blank" rel="noreferrer">App de asistentes <i data-lucide="arrow-up-right"></i></a>
+  <a href="${publicLiveUrl()}" target="_blank" rel="noreferrer">App de asistentes <i data-lucide="arrow-up-right"></i></a>
   <a href="${DEMO_URL}" target="_blank" rel="noreferrer">Demo: Mercadito <i data-lucide="arrow-up-right"></i></a>
   <a href="${new URL('/compare.html', DEMO_URL)}" target="_blank" rel="noreferrer">Demo: roto vs. arreglado <i data-lucide="arrow-up-right"></i></a>
   <a href="${REPO_URL}" target="_blank" rel="noreferrer">Repositorio <i data-lucide="arrow-up-right"></i></a>
@@ -205,7 +207,7 @@ setTimeout(() => {
 });
 
 createIcons({
-  icons: { Activity, ArrowUpRight, Bot, Briefcase, Camera, CirclePlay, Cpu, Download, Eye, EyeOff, FileJson, GitBranch, Hourglass, LayoutTemplate, Lightbulb, MemoryStick, MousePointerClick, MoveVertical, NotebookPen, Recycle, Route, Search, StickyNote, Trash2, Waves },
+  icons: { Activity, ArrowUpRight, Bot, Briefcase, Camera, CirclePlay, Cpu, Download, Eye, EyeOff, FileJson, FlaskConical, GitBranch, Hourglass, LayoutTemplate, Lightbulb, MemoryStick, MousePointerClick, MoveVertical, NotebookPen, Recycle, Route, Search, StickyNote, Trash2, Users, Waves },
   attrs: { 'stroke-width': 1.75, 'aria-hidden': 'true' },
 });
 dispatchEvent(new Event('tweakchange'));

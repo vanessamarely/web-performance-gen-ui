@@ -40,3 +40,21 @@ export function withSessionParams(path: string): string {
   if (params.has('local')) url.searchParams.set('local', '');
   return url.toString();
 }
+
+/**
+ * URL de la app de asistentes para el QR y el texto en pantalla. Los celulares no pueden abrir
+ * "localhost": si presentas desde tu máquina, apuntamos a la versión publicada (VITE_SLIDES_URL).
+ * Con ?local (ensayo en una sola máquina, BroadcastChannel) se queda en este mismo origen.
+ */
+export function publicLiveUrl(): string {
+  const published = import.meta.env.VITE_SLIDES_URL as string | undefined;
+  const isLocalHost = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  const origin = isLocalHost && !params.has('local') && published ? published : location.origin;
+  const url = new URL('/live/', origin);
+  if (SESSION_PARAM) url.searchParams.set('session', SESSION_PARAM);
+  if (params.has('local')) url.searchParams.set('local', '');
+  return url.toString();
+}
+
+/** Texto corto de una URL para mostrarla en pantalla (sin https:// ni barra final). */
+export const prettyUrl = (u: string) => u.replace(/^https?:\/\//, '').replace(/\?$/, '').replace(/\/$/, '');
