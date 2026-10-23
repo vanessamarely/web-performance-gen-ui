@@ -14,6 +14,7 @@ import {
   FileJson,
   FlaskConical,
   GitBranch,
+  Globe,
   Hourglass,
   LayoutTemplate,
   Lightbulb,
@@ -56,7 +57,7 @@ sections.forEach((s, i) => {
   if (i === 0) return;
   s.insertAdjacentHTML(
     'beforeend',
-    `<div class="footer"><span>Instagram <b>@vanessamarelycode</b> · GitHub <b>vanessamarely</b> · <b>#DevFestGT</b></span><span>${pad(i + 1)} / ${total}</span></div>`,
+    `<div class="footer"><span>Instagram <b>@vanessamarelycode</b> · GitHub <b>vanessamarely</b> · <b>vanessamarely.dev</b></span><span>${pad(i + 1)} / ${total}</span></div>`,
   );
 });
 
@@ -207,7 +208,7 @@ setTimeout(() => {
 });
 
 createIcons({
-  icons: { Activity, ArrowUpRight, Bot, Briefcase, Camera, CirclePlay, Cpu, Download, Eye, EyeOff, FileJson, FlaskConical, GitBranch, Hourglass, LayoutTemplate, Lightbulb, MemoryStick, MousePointerClick, MoveVertical, NotebookPen, Recycle, Route, Search, StickyNote, Trash2, Users, Waves },
+  icons: { Activity, ArrowUpRight, Bot, Briefcase, Camera, CirclePlay, Cpu, Download, Eye, EyeOff, FileJson, FlaskConical, GitBranch, Globe, Hourglass, LayoutTemplate, Lightbulb, MemoryStick, MousePointerClick, MoveVertical, NotebookPen, Recycle, Route, Search, StickyNote, Trash2, Users, Waves },
   attrs: { 'stroke-width': 1.75, 'aria-hidden': 'true' },
 });
 dispatchEvent(new Event('tweakchange'));

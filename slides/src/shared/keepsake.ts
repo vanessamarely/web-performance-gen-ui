@@ -43,7 +43,7 @@ export function keepsakeMarkdown({ nickname, notes, doll }: KeepsakeInput): stri
   }
   out.push('', '## 10 reglas para una UI generativa rápida');
   CHECKLIST.forEach(([h, p], i) => out.push(`${i + 1}. **${h}:** ${p}`));
-  out.push('', '---', `- Repo: ${REPO_URL}`, `- Slides: ${SLIDES_URL}`, `- Demo: ${DEMO_URL}`, '');
+  out.push('', '---', `- Web de Vanessa: https://vanessamarely.dev`, `- Repo: ${REPO_URL}`, `- Slides: ${SLIDES_URL}`, `- Demo: ${DEMO_URL}`, '');
   return out.join('\n');
 }
 
@@ -141,7 +141,7 @@ export function keepsakeHTML({ nickname, notes, doll }: KeepsakeInput): string {
   </section>
   <section class="card">
     <p class="eyebrow">// Enlaces</p>
-    <p style="margin:0">Repo: <a href="${esc(REPO_URL)}">${esc(REPO_URL)}</a><br>Slides: <a href="${esc(SLIDES_URL)}">${esc(SLIDES_URL)}</a><br>Demo: <a href="${esc(DEMO_URL)}">${esc(DEMO_URL)}</a></p>
+    <p style="margin:0">Web de Vanessa: <a href="https://vanessamarely.dev">vanessamarely.dev</a><br>Repo: <a href="${esc(REPO_URL)}">${esc(REPO_URL)}</a><br>Slides: <a href="${esc(SLIDES_URL)}">${esc(SLIDES_URL)}</a><br>Demo: <a href="${esc(DEMO_URL)}">${esc(DEMO_URL)}</a></p>
   </section>
   <footer>Generada en tu celular · tus notas nunca salieron de tu dispositivo</footer>
 </main>
