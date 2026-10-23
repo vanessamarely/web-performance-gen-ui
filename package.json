@@ -11,5 +11,8 @@
     "dev:demo": "npm run dev -w demo",
     "build": "npm run build -w slides && npm run build -w demo",
     "deploy": "npm run build && firebase deploy"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.64.1"
   }
 }

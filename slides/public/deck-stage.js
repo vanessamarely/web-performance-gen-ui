@@ -1153,8 +1153,10 @@
       // marginLeft shifts the centre by rw/2 so it lands in the middle of
       // the [rw, innerWidth] stage region.
       if (this._overlay) this._overlay.style.marginLeft = (rw / 2) + 'px';
-      const vw = window.innerWidth - rw;
-      const vh = window.innerHeight;
+      // Usa el tamaño del host (por defecto la ventana). Así el deck puede encajarse en un
+      // área menor, p. ej. el 16:9 dentro de la pantalla ultra ancha del evento.
+      const vw = (this.clientWidth || window.innerWidth) - rw;
+      const vh = this.clientHeight || window.innerHeight;
       const s = Math.min(vw / this.designWidth, vh / this.designHeight);
       this._canvas.style.transform = `scale(${s})`;
     }

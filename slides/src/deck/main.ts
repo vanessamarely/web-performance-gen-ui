@@ -33,6 +33,7 @@ import { DEMO_URL, REPO_URL, withSessionParams } from '../shared/config';
 import { quitapenasSVG, randomDoll } from '../shared/quitapenas';
 import { animateNotchLogos } from './gdg-logo';
 import { initLive } from './live';
+import { initEventScreen } from './screen';
 
 type DeckStage = HTMLElement & { goTo(i: number): void; next(): void; prev(): void };
 
@@ -120,6 +121,7 @@ menu.innerHTML = `
   <button type="button" data-act="theme">Modo claro / oscuro <kbd>L</kbd></button>
   <button type="button" data-act="fs">Pantalla completa <kbd>F</kbd></button>
   <button type="button" data-act="rail">Panel de miniaturas <kbd>S</kbd></button>
+  <button type="button" data-act="screen">Pantalla del evento 16:9 <kbd><span data-screen-state>1680×672</span> · E</kbd></button>
   <button type="button" data-act="present" data-presenter-only>Presentar en vivo (GitHub)</button>
   <button type="button" data-act="questions" data-presenter-ui hidden>Preguntas del público <kbd><span data-q-count>0</span> · Q</kbd></button>
   <button type="button" data-act="wipe" data-presenter-ui hidden>Vaciar sesión en vivo…</button>
@@ -163,6 +165,7 @@ menu.addEventListener('click', (e) => {
   if (act === 'theme') setTheme(!isDark());
   if (act === 'fs') toggleFullscreen();
   if (act === 'rail') toggleRail();
+  if (act === 'screen') eventScreen.toggle();
   if (act === 'present') document.dispatchEvent(new CustomEvent('deck:present'));
   if (act === 'wipe') {
     closeMenu();
@@ -174,11 +177,32 @@ menu.addEventListener('click', (e) => {
   }
 });
 
-stage.addEventListener('slidechange', (e) => {
-  current = (e as CustomEvent).detail.index;
+// ── Cambio de slide: clips (plan B de la demo) y menú ────────────────
+function onSlide(index: number, slide: HTMLElement) {
+  current = index;
+  // Clips: se cargan perezosamente y solo se reproducen en el slide activo.
+  document.querySelectorAll<HTMLVideoElement>('.clip video').forEach((v) => {
+    if (slide.contains(v)) {
+      if (!v.src && v.dataset.src) {
+        v.src = v.dataset.src;
+        v.addEventListener('loadeddata', () => v.parentElement?.querySelector('.ph')?.remove(), { once: true });
+        v.addEventListener('error', () => v.remove(), { once: true });
+      }
+      v.play().catch(() => undefined);
+    } else v.pause();
+  });
   renderMenuList();
+}
+stage.addEventListener('slidechange', (e) => {
+  const { index, slide } = (e as CustomEvent).detail as { index: number; slide: HTMLElement };
+  onSlide(index, slide);
 });
 renderMenuList();
+// El 'slidechange' inicial ocurre antes de que cargue este módulo: procesamos el slide activo.
+setTimeout(() => {
+  const first = sections.findIndex((s) => s.hasAttribute('data-deck-active'));
+  if (first >= 0) onSlide(first, sections[first]);
+});
 
 createIcons({
   icons: { Activity, ArrowUpRight, Bot, Briefcase, Camera, CirclePlay, Cpu, Download, Eye, EyeOff, FileJson, GitBranch, Hourglass, LayoutTemplate, Lightbulb, MemoryStick, MousePointerClick, MoveVertical, NotebookPen, Recycle, Route, Search, StickyNote, Trash2, Waves },
@@ -195,9 +219,13 @@ addEventListener('keydown', (e) => {
   if (k === 'l') setTheme(!isDark());
   if (k === 'f') toggleFullscreen();
   if (k === 's') toggleRail();
+  if (k === 'e') eventScreen.toggle();
   if (k === 'm') (menu.hidden ? openMenu : closeMenu)();
   if (k === 'p') open(withSessionParams('/presenter/'), 'wpgu-presenter');
 });
 
 // ── En vivo ──────────────────────────────────────────────────────────
+// ── Pantalla del evento (1680×672): slide 16:9 al centro + laterales con QR y progreso ──
+const eventScreen = initEventScreen(stage, sections);
+
 initLive(stage, sections).catch((err) => console.error('[live]', err));

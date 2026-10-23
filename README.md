@@ -63,6 +63,23 @@ Resultados con el mismo stream (`/compare.html`): CLS 0,106 → 0,012, **23.546 
 
 Prompts listos para tu agente: [docs/AGENTES.md](docs/AGENTES.md).
 
+### Plan B: clips y traces grabados
+
+Si la demo en vivo falla, el slide **Demo · Mercadito** reproduce un clip local (sin red): el `<video data-src>` solo se carga y reproduce cuando ese slide está activo ([`main.ts`](slides/src/deck/main.ts) → `onSlide`). Para regrabarlos:
+
+```bash
+node scripts/record-clips.mjs
+```
+
+[`record-clips.mjs`](scripts/record-clips.mjs) usa Playwright con el **Google Chrome instalado** (no descarga navegadores; la primera vez puede pedir `npx playwright-core install ffmpeg`, ~1,4 MB, para codificar video). Si la demo no está corriendo en `http://localhost:5174` la levanta sola (`DEMO_URL` para otra dirección). Puedes pasar solo lo que quieras regrabar: `node scripts/record-clips.mjs compare traces`.
+
+| Salida | Qué muestra |
+|---|---|
+| `slides/public/clips/compare.webm` | `/compare.html` generando *"Regalo de café bajo Q200"* en ambos iframes + tabla de métricas (el del slide) |
+| `slides/public/clips/broken-vs-fixed.webm` | `/?preset=broken` generando y luego `/?preset=fixed` |
+| `slides/public/clips/ranking-inp.webm` | "Ordenar por recomendación" con `?preset=broken&cpu=4` vs. `?preset=fixed` |
+| `docs/traces/mercadito-{broken,fixed}.json` | Generar + ordenar con CPU 4×. Ábrelos en DevTools → Performance → *Load profile*: aparece la pista **Mercadito · GenUI** (Stream, Parser, Render, Ranking). No se versionan (`.gitignore`). |
+
 ## Correr en local
 
 ```bash
