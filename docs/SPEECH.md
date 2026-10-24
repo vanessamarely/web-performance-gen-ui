@@ -17,7 +17,7 @@ Hilo de toda la charla, en una frase: **"La IA ya no responde texto, responde in
 - Deck en el proyector: `https://web-performance-gen-ui-slides.web.app/?presenter=1&screen=event` → menú → **Presentar en vivo (GitHub)**. Debe verse el badge rojo **● EN VIVO**.
 - Menú → **Vaciar sesión en vivo…** (escribe VACIAR).
 - Laptop: tecla **P** → consola de presentadora → **Iniciar** el cronómetro al decir la primera palabra.
-- Pestañas listas: Mercadito `?preset=broken&lab`, `/compare.html`, DevTools abierto en Performance (CPU 4×), terminal con tu agente y `chrome-devtools-mcp`.
+- Pestañas listas: Mercadito https://web-performance-gen-ui-demo.web.app/?preset=broken&lab, la comparación https://web-performance-gen-ui-demo.web.app/compare (ya viene con CPU 4×), DevTools abierto en Performance (CPU 4×) y, si haces el paso del agente, la terminal con `chrome-devtools-mcp` (ya configurado en `.mcp.json`). El slide 11 trae el video real por si no da tiempo.
 - Plan B: los clips del slide de demo se reproducen sin red; `?cpu=4` si no puedes usar DevTools.
 - **Slides con código (modo foco):** el bloque avanza solo, una idea a la vez, con la explicación abajo. Con **↓ / ↑** o un clic sobre el código lo controlas tú; **← / →** siguen cambiando de slide. Lee la frase del recuadro amarillo: está escrita para quien no programa.
 
