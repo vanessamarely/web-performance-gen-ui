@@ -33,7 +33,7 @@ Hilo de toda la charla, en una frase: **"La IA ya no responde texto, responde in
 
 ### 2 · Únete ⏱ 0:40
 
-**Di:** "Esta charla también es una app. Escaneen el QR: van a ver cada slide en su celular con las ideas clave, pueden tomar notas y, algo importante, **si están escribiendo una nota, su celular no les cambia de slide hasta que la guarden**: nadie pierde lo que estaba escribiendo. También van a crear su **quitapenas**: ¿conocen las muñecas quitapenas? Según la tradición, le cuentas tu pena antes de dormir, la pones bajo la almohada y al despertar la pena ya no está. Hoy le vamos a dejar nuestras **penas de performance**. Y al final descargan una memoria de la charla con el resumen, sus notas y su quitapenas. Todo se genera en su celular: sus notas no salen de su teléfono."
+**Di:** "Esta charla también es una app. Escaneen el QR: van a ver cada slide en su celular con las ideas clave, pueden tomar notas y, algo importante, **si están escribiendo una nota, su celular no les cambia de slide hasta que la guarden**: nadie pierde lo que estaba escribiendo. También van a crear su **quitapenas**: ¿conocen las muñecas quitapenas? Según la tradición, le cuentas tu pena antes de dormir, la pones bajo la almohada y al despertar la pena ya no está. Hoy le vamos a dejar nuestras **penas de performance**. Y al final descargan una memoria de la charla **en PDF**, con un toque, con el resumen, sus notas y su quitapenas. Todo se genera en su celular: sus notas no salen de su teléfono."
 
 **Haz:** deja el QR 20–30 s mientras pasas al siguiente slide. El QR también queda visible en el lateral izquierdo de la pantalla del evento.
 
@@ -279,7 +279,7 @@ Un dato curioso que encontré preparando la demo: si recreas **toda** la vista c
 
 ### 30 · ¡Maltiox! ⏱ 29:45
 
-**Di:** "Maltiox, que es 'gracias' en k'iche'. En su celular ya pueden descargar su memoria de la charla con el resumen, sus notas y su quitapenas. El código del deck, la app y la demo está en el repositorio, y todo lo que hago lo encuentran en vanessamarely.dev. ¿Preguntas?"
+**Di:** "Maltiox, que es 'gracias' en k'iche'. En su celular ya pueden descargar su memoria de la charla **en PDF**, con el resumen, sus notas y su quitapenas: botón *Descargar memoria (PDF)*. El código del deck, la app y la demo está en el repositorio, y todo lo que hago lo encuentran en vanessamarely.dev. ¿Preguntas?"
 
 **Haz:** tecla **Q** para ver las preguntas que llegaron desde los celulares.
 

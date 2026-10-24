@@ -2,7 +2,7 @@
 // Se genera en el celular (nada sale del dispositivo) como un HTML autocontenido que se ve
 // bien offline, se puede imprimir a PDF y se comparte como archivo. También hay versión .md.
 import { CHECKLIST, SLIDES } from './content';
-import { DEMO_URL, EVENT, REPO_URL, SLIDES_URL, SPEAKER, SPEAKER_HANDLE, TALK_TITLE, TALK_TITLE_ES } from './config';
+import { EVENT, PUBLIC_DEMO_URL as DEMO_URL, PUBLIC_SLIDES_URL as SLIDES_URL, REPO_URL, SPEAKER, SPEAKER_HANDLE, TALK_TITLE, TALK_TITLE_ES } from './config';
 import { LEYENDA, PENAS, quitapenasSVG, type QuitapenasOptions } from './quitapenas';
 import { esc } from './esc';
 
@@ -17,10 +17,10 @@ export interface KeepsakeInput {
   doll: { name: string; pena: number; opts: QuitapenasOptions } | null;
 }
 
-const fmtDate = (d = new Date()) => d.toLocaleDateString('es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
+export const fmtDate = (d = new Date()) => d.toLocaleDateString('es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
 
 /** Slides que entran a la memoria: los marcados + cualquiera donde la persona escribió algo. */
-function keepsakeSlides(notes: KeepsakeInput['notes']) {
+export function keepsakeSlides(notes: KeepsakeInput['notes']) {
   return SLIDES.filter((s) => s.inSummary || notes[s.id]?.text.trim());
 }
 

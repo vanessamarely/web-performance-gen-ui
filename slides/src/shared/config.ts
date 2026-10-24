@@ -33,6 +33,10 @@ export const prefersReducedMotion = () => matchMedia('(prefers-reduced-motion: r
 export const SLIDES_URL = import.meta.env.DEV ? 'http://localhost:5173' : (import.meta.env.VITE_SLIDES_URL as string) || location.origin;
 export const DEMO_URL = import.meta.env.DEV ? 'http://localhost:5174' : (import.meta.env.VITE_DEMO_URL as string) || '/';
 
+/** URLs públicas para lo que la gente se lleva (memoria PDF/HTML/Markdown): nunca localhost. */
+export const PUBLIC_SLIDES_URL = (import.meta.env.VITE_SLIDES_URL as string) || 'https://web-performance-gen-ui-slides.web.app';
+export const PUBLIC_DEMO_URL = (import.meta.env.VITE_DEMO_URL as string) || 'https://web-performance-gen-ui-demo.web.app';
+
 /** Conserva ?local y ?session al construir enlaces entre deck, consola y app de asistentes. */
 export function withSessionParams(path: string): string {
   const url = new URL(path, location.origin);

@@ -328,21 +328,42 @@ function keepsakeInput() {
 const slug = () => `memoria-web-performance-genui-devfest-gt${name ? '-' + name.normalize('NFD').replace(/[^\w]+/g, '-').toLowerCase() : ''}`;
 
 function keepsakeButtons() {
-  return `<div class="row">
-      <button class="btn primary" type="button" data-dl-html>${icon(Download, 18)} Descargar memoria</button>
+  return `<button class="btn wide primary" type="button" data-dl-pdf>${icon(Download, 18)} Descargar memoria (PDF)</button>
+    <div class="row">
+      <button class="btn" type="button" data-dl-html>${icon(FileText, 18)} HTML</button>
       <button class="btn" type="button" data-dl-md>${icon(FileText, 18)} Markdown</button>
     </div>
+    <p class="fine" data-pdf-msg role="status"></p>
     ${doll.saved ? `<button class="btn wide" type="button" data-dl-doll>${icon(Download, 18)} Descargar mi quitapenas (PNG)</button>` : ''}
     <button class="btn wide ghost" type="button" data-share>${icon(Send, 18)} Compartir</button>`;
 }
+/** PDF con pdf-lib: se carga al pulsar (import dinámico) y se genera en el celular. */
+async function makePDF(): Promise<Blob> {
+  const { keepsakePDF } = await import('../shared/keepsake-pdf');
+  return keepsakePDF(keepsakeInput());
+}
 function bindKeepsake(root: ParentNode) {
+  root.querySelector('[data-dl-pdf]')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    const msg = root.querySelector<HTMLElement>('[data-pdf-msg]');
+    btn.disabled = true;
+    if (msg) msg.textContent = 'Generando tu PDF en el celular…';
+    try {
+      downloadFile(`${slug()}.pdf`, await makePDF());
+      if (msg) msg.textContent = 'Listo: revisa tus descargas.';
+    } catch (err) {
+      console.error('[memoria] PDF', err);
+      if (msg) msg.textContent = 'No se pudo generar el PDF. Prueba con HTML.';
+    } finally {
+      btn.disabled = false;
+    }
+  });
   root.querySelector('[data-dl-html]')?.addEventListener('click', () => downloadFile(`${slug()}.html`, keepsakeHTML(keepsakeInput()), 'text/html;charset=utf-8'));
   root.querySelector('[data-dl-md]')?.addEventListener('click', () => downloadFile(`${slug()}.md`, keepsakeMarkdown(keepsakeInput()), 'text/markdown;charset=utf-8'));
   root.querySelector('[data-dl-doll]')?.addEventListener('click', async () => downloadFile(`quitapenas-${slug()}.png`, await quitapenasPNG(doll)));
   root.querySelector('[data-share]')?.addEventListener('click', async () => {
-    const html = keepsakeHTML(keepsakeInput());
     try {
-      const file = new File([html], `${slug()}.html`, { type: 'text/html' });
+      const file = new File([await makePDF()], `${slug()}.pdf`, { type: 'application/pdf' });
       if (navigator.canShare?.({ files: [file] })) await navigator.share({ title: `Memoria · ${TALK_TITLE}`, files: [file] });
       else if (navigator.share) await navigator.share({ title: `Memoria · ${TALK_TITLE}`, text: keepsakeMarkdown(keepsakeInput()) });
       else {

@@ -34,7 +34,8 @@ Avatar inspirado en las **muñecas quitapenas** de Guatemala (le cuentas tu pena
 
 En el último slide (y en **Menú → Mis notas y memoria**) cada asistente descarga su memoria ([`keepsake.ts`](slides/src/shared/keepsake.ts)):
 
-- **HTML autocontenido** (se ve sin internet, se imprime a PDF): el resumen de **todos** los slides aunque haya llegado tarde, sus notas resaltadas en cada slide, su quitapenas con su pena y la leyenda, y las 10 reglas.
+- **PDF con un toque** (botón principal), generado en el celular con [pdf-lib](https://pdf-lib.js.org) (MIT, gratis), que se carga solo al pulsar el botón: el resumen de todos los slides, las notas, el quitapenas y las 10 reglas.
+- **HTML autocontenido** (se ve sin internet): el resumen de **todos** los slides aunque haya llegado tarde, sus notas resaltadas en cada slide, su quitapenas con su pena y la leyenda, y las 10 reglas.
 - **Markdown** con lo mismo, y **Compartir** (Web Share con el archivo).
 - Las notas **nunca salen del celular**: no hay colección para ellas en Firestore.
 
