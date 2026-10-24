@@ -99,7 +99,7 @@ Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigat
 - **Live metrics**: apenas lo abres ves tu LCP, INP y CLS locales en tiempo real, al lado de los datos de campo de CrUX, ahora también por soft navigation.
 - **Insights**: en vez de leer el trace a ojo, el panel te dice *qué* causó el layout shift o el INP alto, y en qué vista de tu SPA.
 - **Niveles de CPU calibrados**: puedes reproducir 'un celular de gama baja' de forma consistente.
-- **Pistas propias**: puedes dibujar tus propias filas en el trace y buscarlas con Ctrl+F."
+- **Un trace que cuenta la historia completa** (señala el dibujo y su leyenda): arriba, el hilo principal; lo rayado es un frame lento, un LoAF, más de 50 ms en los que la página no responde. En rojo, los layout shifts. En azul, lila y verde, *mis* etapas: stream, parser, render; eso son las pistas propias, que les explico en un momento. Y en amarillo, una soft navigation: el cambio de vista sin recargar. La gracia es ver juntos la **causa**, mi código, y el **efecto**, el frame lento o el salto."
 
 **Haz (opcional, si vas a tiempo):** abre DevTools en Mercadito y muestra Live metrics 15 segundos.
 
@@ -111,9 +111,9 @@ Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigat
 
 ### 11 · DevTools for agents ⏱ 7:30
 
-**Di:** "Y ahora lo más agéntico: **Chrome DevTools for agents**. Es un servidor MCP, y también una CLI, ya estables, que conectas a tu agente de código: Gemini CLI, Antigravity, Claude Code, Cursor… Con eso, tu agente puede abrir Chrome, emular CPU lenta, grabar un trace, leer los insights y correr Lighthouse. Las tools clave: `performance_start_trace`, `performance_analyze_insight`, `emulate` y `lighthouse_audit`. Y si tu página expone herramientas con WebMCP, el agente también puede listarlas y ejecutarlas. La idea no es que el agente 'adivine': le pides 'mide el INP de este botón con CPU 4×, propón un arreglo y **vuelve a medir**'. Esa última parte es la que importa."
+**Di:** "Y ahora lo más agéntico: **Chrome DevTools for agents**. Es un servidor MCP, y también una CLI, ya estables, que conectas a tu agente de código: Gemini CLI, Antigravity, Claude Code, Cursor… Con eso, tu agente puede abrir Chrome, emular CPU lenta, grabar un trace, leer los insights y correr Lighthouse. Las tools clave: `performance_start_trace`, `performance_analyze_insight`, `emulate` y `lighthouse_audit`. Y si tu página expone herramientas con WebMCP, el agente también puede listarlas y ejecutarlas. La idea no es que el agente 'adivine': le pides 'mide el INP de este botón con CPU 4×, propón un arreglo y **vuelve a medir**'. Esa última parte es la que importa. Y esto no es un ejemplo inventado: este video lo grabó el propio servidor MCP mientras el agente medía Mercadito con CPU 4×. Con el ranking en el hilo principal, el insight dio un **INP de 1.162 milisegundos**, casi todo *processing duration*. Con el ranking en un Worker: **16 milisegundos**."
 
-**Clave:** MCP + CLI estables; las 4 tools; "y vuelve a medir".
+**Clave:** MCP + CLI estables; las 4 tools; "y vuelve a medir"; el video es real (1.162 ms → 16 ms).
 
 ### 12 · Pistas propias ⏱ 8:30
 

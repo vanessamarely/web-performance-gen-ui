@@ -224,7 +224,12 @@
                 <div class="row"><span class="lbl">Mercadito · Render</span><span class="lane"><i class="g" style="left: 32%; width: 18%">innerHTML 1.840 nodos</i></span></div>
                 <div class="row"><span class="lbl">Soft navs</span><span class="lane"><i class="y" style="left: 76%; width: 20%">/p/cafe-huehue</i></span></div>
               </div>
-              <p class="mono small muted" style="margin: 0">Tus pistas aparecen junto a los frames y se buscan con <b>Ctrl+F</b>.</p>
+              <ul class="trace-legend" aria-label="Leyenda del trace">
+                <li><i class="sw long"></i><span><b>Frame lento (LoAF)</b> · más de 50 ms: el clic espera</span></li>
+                <li><i class="sw r"></i><span><b>Layout shift</b> · algo se movió en pantalla</span></li>
+                <li><i class="sw b"></i><i class="sw p"></i><i class="sw g"></i><span><b>Tus pistas</b> · tu código: stream, parser, render</span></li>
+                <li><i class="sw y"></i><span><b>Soft nav</b> · cambio de vista sin recargar</span></li>
+              </ul>
             </div>
           </div>
         </div>
@@ -265,35 +270,29 @@ pinta primero el estado "ordenando…".</pre>
         <div class="frame card-frame">
           <p class="eyebrow">// Chrome DevTools for agents · MCP + CLI estables</p>
           <h2 class="title">Tu agente de código <span class="hl">también mide</span></h2>
-          <div class="grid-2" style="grid-template-columns: 0.9fr 1.1fr; align-items: start">
+          <div class="grid-2" style="grid-template-columns: 1.15fr 0.85fr; align-items: start">
             <div class="stack">
-              <div class="code sm">
-                <div class="bar"><span>mcp.json</span><span>Gemini CLI · Antigravity · Claude Code…</span></div>
-<pre>{
-  <span class="s">"mcpServers"</span>: {
-    <span class="s">"chrome-devtools"</span>: {
-      <span class="s">"command"</span>: <span class="s">"npx"</span>,
-      <span class="s">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"chrome-devtools-mcp@latest"</span>]
-    }
-  }
-}</pre>
-              </div>
-              <div class="tool-chips">
-                <span class="on">performance_start_trace</span><span class="on">performance_analyze_insight</span><span>emulate</span><span>lighthouse_audit</span><span>take_snapshot</span><span>list_webmcp_tools</span>
+              <div class="clip agent-clip"><video data-src="/clips/agente-devtools-mcp.mp4" muted loop playsinline preload="none" aria-label="Video real: el agente mide Mercadito con chrome-devtools-mcp"></video><span class="ph">Video real · chrome-devtools-mcp</span></div>
+              <div class="agent-result">
+                <div class="bad"><span>Ranking en el hilo principal</span><b>INP 1.162 ms</b></div>
+                <div class="good"><span>Ranking en un Worker</span><b>INP 16 ms</b></div>
               </div>
             </div>
-            <div class="agent">
-              <div class="bar"><span>agente · terminal</span><span>ejemplo · chrome-devtools</span></div>
-<pre><span class="u">&gt;</span> Abre localhost:5174 con CPU 4x, haz clic en
-  "Ordenar" y dime qué causa el INP. Propón un fix.
-
-<span class="dim">⏺ emulate</span> { cpuThrottlingRate: 4 }
+            <div class="stack">
+              <div class="agent">
+                <div class="bar"><span>agente · chrome-devtools-mcp</span><span>registro real</span></div>
+<pre><span class="dim">⏺ emulate</span> { cpuThrottlingRate: <span class="t">4</span> }
+<span class="dim">⏺ screencast_start</span>
+<span class="dim">⏺ navigate_page</span> Mercadito ?preset=broken
 <span class="dim">⏺ performance_start_trace</span> { reload: false }
-<span class="dim">⏺ click</span> "Ordenar por recomendación"
+<span class="dim">⏺ take_snapshot</span> → <span class="dim">⏺ click</span> "Ordenar"
 <span class="dim">⏺ performance_analyze_insight</span> INPBreakdown
-<span class="t">INP 486 ms</span> · processing 451 ms en rankProducts()
-<span class="ok">✓</span> Moví el ranking a rank.worker.ts
-<span class="ok">✓</span> Nuevo trace: <span class="ok">INP 72 ms</span></pre>
+  <span class="t">1.162 ms</span> · processing <span class="t">1.147 ms</span>
+<span class="dim">⏺ navigate_page</span> ?preset=fixed <span class="dim">(Worker)</span>
+<span class="dim">⏺</span> mismo trace + clic + insight
+  <span class="ok">16 ms</span> · processing <span class="ok">2 ms</span></pre>
+              </div>
+              <div class="code sm"><div class="bar"><span>mcp.json</span><span>Gemini CLI · Antigravity · Claude Code…</span></div><pre><span class="s">"command"</span>: <span class="s">"npx"</span>, <span class="s">"args"</span>: [<span class="s">"-y"</span>, <span class="s">"chrome-devtools-mcp@latest"</span>]</pre></div>
             </div>
           </div>
         </div>

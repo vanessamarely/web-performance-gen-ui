@@ -141,7 +141,7 @@ export const SLIDES: SlideContent[] = [
       'Live metrics: LCP, INP y CLS locales al instante, junto a los datos de campo de CrUX.',
       'Insights: el panel te dice qué causó el layout shift o el INP alto, ahora también por soft navigation.',
       'Overrides de nivel de CPU calibrados para reproducir equipos lentos de forma consistente.',
-      'Pistas propias (Extensibility API) que puedes buscar con Ctrl+F en el flame chart.',
+      'En un mismo trace ves tu código (tus pistas: stream, parser, render) junto a sus efectos: frames lentos (LoAF), layout shifts y soft navigations.',
     ],
     notes: 'Abre DevTools en la demo si da tiempo: Live metrics con interacción. Soft navs en Live metrics desde Chrome 152 e Insights completos en 153/154.',
     time: '5:30',
@@ -172,6 +172,7 @@ export const SLIDES: SlideContent[] = [
       'Servidor MCP estable: tu agente de código (Gemini CLI, Antigravity, Claude Code…) abre Chrome, graba traces y lee insights.',
       'Tools clave: performance_start_trace, performance_analyze_insight, emulate (CPU y red), lighthouse_audit.',
       'Con WebMCP habilitado, el agente también puede listar y ejecutar las tools que tu web expone.',
+      'Medido de verdad en Mercadito con CPU 4×: INP de 1.162 ms con el ranking en el hilo principal → 16 ms con un Worker.',
     ],
     code: {
       file: 'mcp.json',
@@ -184,7 +185,7 @@ export const SLIDES: SlideContent[] = [
   }
 }`,
     },
-    notes: 'El prompt de ejemplo está en docs/AGENTES.md. "Le pido a mi agente: mide el INP del botón Ordenar con CPU 4x y propón un fix. Y lo hace: graba el trace, lee el insight, edita el código."',
+    notes: 'El video es real: chrome-devtools-mcp grabó el navegador con screencast_start mientras el agente emulaba CPU 4×, grababa el trace, hacía clic y analizaba INPBreakdown (traces en docs/traces/agente-*.json.gz). El prompt está en docs/AGENTES.md. "Le pido a mi agente: mide el INP del botón Ordenar con CPU 4x y propón un fix. Y lo hace: graba el trace, lee el insight, edita el código."',
     time: '7:30',
     inSummary: true,
   },

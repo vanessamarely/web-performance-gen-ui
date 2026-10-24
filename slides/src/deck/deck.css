@@ -769,3 +769,23 @@ section:has(.weave.bottom) .footer { bottom: 40px; }
 section[data-id='bio'] .card-frame { padding-bottom: 150px; }
 section[data-id='villanos'] .villain { min-height: 250px; }
 section[data-id='villanos'] .card-frame { padding-bottom: 130px; }
+
+/* Leyenda del mini trace (slide 9) */
+.trace-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.trace-legend li { display: flex; align-items: center; gap: 8px; font-size: 15px; line-height: 1.25; color: var(--ink-dim); }
+.trace-legend b { color: var(--ink); font-weight: 700; }
+.trace-legend .sw { flex: none; width: 26px; height: 14px; border-radius: 4px; border: 1.5px solid var(--line); }
+.trace-legend .sw + .sw { margin-left: -4px; width: 14px; }
+.trace-legend .sw.long { background: repeating-linear-gradient(-45deg, var(--ht-red) 0 4px, #ffb3cf 4px 8px); }
+.trace-legend .sw.r { background: var(--ht-red); } .trace-legend .sw.b { background: var(--ht-blue); } .trace-legend .sw.p { background: #c3a6ff; }
+.trace-legend .sw.g { background: var(--ht-green); } .trace-legend .sw.y { background: var(--ht-yellow); }
+
+/* Slide 11: video real del agente + resultado medido */
+.agent-clip { aspect-ratio: 16 / 9; }
+.agent-result { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.agent-result > div { border: var(--lw) solid var(--line); border-radius: var(--r-sm); padding: 8px 12px; display: grid; gap: 2px; }
+.agent-result .bad { background: var(--p-red); } .agent-result .good { background: var(--p-green); }
+.agent-result span { font: var(--mono-w) 13px var(--mono); color: var(--ink-dim); }
+.agent-result b { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+section[data-id='devtools-mcp'] .agent pre { font-size: 13px; line-height: 1.5; }
+section[data-id='devtools-mcp'] .code.sm pre { white-space: pre-wrap; }
