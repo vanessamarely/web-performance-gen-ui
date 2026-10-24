@@ -1,0 +1,10 @@
+node_modules
+dist
+.firebase
+docs/traces
+package-lock.json
+*.html
+*.css
+*.md
+slides/public
+demo/public

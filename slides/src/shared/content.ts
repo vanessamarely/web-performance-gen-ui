@@ -201,11 +201,13 @@ export const SLIDES: SlideContent[] = [
     ],
     code: {
       file: 'perf-tracks.ts',
-      text: `performance.measure('parse', {
+      text: `const start = performance.now();
+parseChunk(chunk);
+performance.measure('parse', {
   start, end: performance.now(),
   detail: { devtools: {
     dataType: 'track-entry',
-    track: 'Stream', trackGroup: 'Mercadito',
+    track: 'Parser', trackGroup: 'Mercadito',
     color: 'tertiary',
     properties: [['tokens', '128']],
   } },
@@ -257,7 +259,13 @@ export const SLIDES: SlideContent[] = [
   min-height: 312px;
   contain: layout paint;
 }
-.slot-product img { aspect-ratio: 4 / 3; width: 100%; }
+.slot-product img {
+  aspect-ratio: 4 / 3; width: 100%;
+}
+.slot-product .desc {
+  line-clamp: 3;
+}
+/* solo cuando el componente YA terminó */
 .slot-done {
   content-visibility: auto;
   contain-intrinsic-size: auto 312px;
@@ -298,8 +306,9 @@ if (changed) render(state);
 this.buf += chunk;
 return JSON.parse(repair(this.buf));
 // ✓ IncrementalParser.push
-for (; this.pos < this.buf.length; this.pos++)
-  // ¿cerró un producto? → JSON.parse de ese trozo`,
+for (; this.pos < this.buf.length; this.pos++) {
+  // ¿cerró un producto? → JSON.parse de ese trozo
+}`,
     },
     notes: 'Explica la notación O con el libro: no hace falta matemática, solo "¿el trabajo crece igual que la respuesta, o mucho más rápido?". El código es el real de Mercadito (demo/src/genui/parsers.ts): el interruptor "Parser incremental" cambia entre los dos. En la demo, el HUD "parseo" baja de ~35 ms a ~3 ms.',
     time: '11:30',
@@ -318,16 +327,16 @@ for (; this.pos < this.buf.length; this.pos++)
     ],
     code: {
       file: 'scheduler.ts',
-      text: `let dirty = false;
+      text: `let raf = 0;
 function onToken(ev) {
   store.apply(ev);
-  if (!dirty) { dirty = true; requestAnimationFrame(flush); }
+  if (!raf) raf = requestAnimationFrame(flush);
 }
 async function flush() {
-  dirty = false;
+  raf = 0;
   for (const part of store.takeChanges()) {
     render(part);
-    await scheduler.yield();
+    await scheduler.yield();  // deja pasar clics
   }
 }`,
     },
@@ -385,11 +394,15 @@ async function flush() {
     code: {
       file: 'keyed.ts',
       text: `const nodes = new Map<string, HTMLElement>();
-function upsert(item: Product) {
-  let el = nodes.get(item.id);
-  if (!el) nodes.set(item.id, (el = createCard(item)));
-  patchText(el, item);   // solo lo que cambió
-}`,
+
+function upsert(p: Product) {
+  let el = nodes.get(p.id);
+  if (!el) nodes.set(p.id, (el = createCard(p)));
+  patchText(el, p);   // textContent, no HTML
+}
+
+// reordenar con transición (Chrome 147+)
+grid.startViewTransition?.(() => sortCards());`,
     },
     notes: 'Mismo stream en Mercadito: ~23.500 nodos creados con innerHTML vs ~340 con claves y slots reciclados. El parseo baja de ~17 ms a ~1 ms y los renders de 210 a 8.',
     time: '14:45',
@@ -449,12 +462,21 @@ function upsert(item: Product) {
     code: {
       file: 'soft-navs.ts',
       text: `new PerformanceObserver((list) => {
-  for (const nav of list.getEntries()) {
-    report('soft-nav', nav.name, nav.navigationId);
-  }
-}).observe({ type: 'soft-navigation', buffered: true });
+  for (const nav of list.getEntries())
+    startView(nav.name, nav.interactionId);
+}).observe({ type: 'soft-navigation',
+             buffered: true });
 
-onLCP(send, { reportSoftNavs: true });`,
+new PerformanceObserver((list) => {
+  for (const p of list.getEntries())
+    if (p.interactionId === view.interactionId)
+      recordLcp(p);
+}).observe({ type: 'interaction-contentful-paint',
+             buffered: true });
+
+// rum.ts · web-vitals v6
+for (const on of [onLCP, onINP, onCLS])
+  on(send, { reportSoftNavs: true });`,
     },
     notes: 'Mercadito navega a /p/:id al abrir un producto: es una soft navigation. El HUD la cuenta.',
     time: '17:45',

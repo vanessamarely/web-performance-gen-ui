@@ -26,7 +26,7 @@ export function createLocalRealtime(): Realtime {
   const listeners = new Set<(db: LocalDb) => void>();
   const reactionListeners = new Set<(r: Reaction) => void>();
 
-  let uid: string | null = null;
+  let uid: string | null;
   try {
     uid = sessionStorage.getItem('wpgu.uid');
     if (!uid) sessionStorage.setItem('wpgu.uid', (uid = 'local-' + crypto.randomUUID().slice(0, 8)));

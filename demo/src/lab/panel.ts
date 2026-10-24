@@ -3,6 +3,7 @@
 import { FLAG_META, cpu, flags, onFlags, setAll, setFlag, type Flags } from './flags';
 import { metrics } from './metrics';
 import { visual } from './visual';
+import { esc } from '../esc';
 
 const GUIDE: Record<keyof Flags, { devtools: string[]; ai: string; agent: string }> = {
   reserve: {
@@ -52,8 +53,6 @@ const GUIDE: Record<keyof Flags, { devtools: string[]; ai: string; agent: string
     agent: 'Con chrome-devtools: emulate { cpuThrottlingRate: 4 }, abre Mercadito, genera resultados, inicia un trace, haz click en "Ordenar por recomendación" y analiza INPBreakdown. Mueve rankProducts a un Web Worker y vuelve a medir el INP.',
   },
 };
-
-const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
 export function mountLab(panel: HTMLElement, toggle: HTMLButtonElement, onChange: () => void) {
   const render = () => {

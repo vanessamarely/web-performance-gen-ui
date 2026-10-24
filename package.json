@@ -10,9 +10,18 @@
     "dev:slides": "npm run dev -w slides",
     "dev:demo": "npm run dev -w demo",
     "build": "npm run build -w slides && npm run build -w demo",
+    "test": "npm run test -w slides && npm run test -w demo",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "deploy": "npm run build && firebase deploy"
   },
   "devDependencies": {
-    "playwright-core": "^1.64.1"
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.13.0",
+    "globals": "^17.13.0",
+    "playwright-core": "^1.64.1",
+    "prettier": "^3.9.10",
+    "typescript-eslint": "^8.72.0"
   }
 }

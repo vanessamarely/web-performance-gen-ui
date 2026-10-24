@@ -345,18 +345,19 @@ performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
           <p class="eyebrow">// Contrato primero</p>
           <h2 class="title">Datos, no HTML: <span class="hl">catálogo + schema</span></h2>
           <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start">
-            <div class="code sm" data-focus='[["1-3", "El schema es el contrato: el modelo solo puede devolver este JSON."], ["4", "Primero el hero: es lo más visible, así el LCP llega pronto."], ["5-7", "Luego la grilla: máximo 6 productos, de un catálogo cerrado."], ["8-9", "Al final el detalle: comparativa y consejos."], ["12", "Se lo pasas al modelo: Prompt API o Gemini API."]]'>
+            <div class="code sm" data-focus='[["1-3", "El schema es el contrato: el modelo solo puede devolver este JSON."], ["4", "Primero el hero: es lo más visible, así el LCP llega pronto."], ["5-7", "Luego la grilla: máximo 6 productos, de un catálogo cerrado."], ["8-9", "Al final el detalle: comparativa y consejos."], ["13", "Se lo pasas al modelo: Prompt API o Gemini API."]]'>
               <div class="bar"><span>schema.ts</span><span>orden pensado para streaming</span></div>
 <pre><span class="k">const</span> UI_SCHEMA = {
   type: <span class="s">'object'</span>,
   properties: {
-    <span class="mark">hero</span>: { $ref: <span class="s">'#/hero'</span> },     <span class="c">// 1º: LCP arriba</span>
-    products: {                 <span class="c">// 2º: la grilla</span>
+    <span class="mark">hero</span>: { $ref: <span class="s">'#/$defs/hero'</span> },      <span class="c">// 1º: LCP arriba</span>
+    products: {                          <span class="c">// 2º: la grilla</span>
       type: <span class="s">'array'</span>, maxItems: <span class="n">6</span>,
-      items: { $ref: <span class="s">'#/product'</span> } },
-    compare: { $ref: <span class="s">'#/table'</span> },  <span class="c">// 3º: el detalle</span>
-    tips: { type: <span class="s">'array'</span> },
+      items: { $ref: <span class="s">'#/$defs/product'</span> } },
+    compare: { $ref: <span class="s">'#/$defs/table'</span> },  <span class="c">// 3º: el detalle</span>
+    tips: { type: <span class="s">'array'</span>, items: { type: <span class="s">'string'</span> } },
   },
+  $defs: { hero, product, table },
 };
 <span class="c">// Prompt API: responseConstraint: UI_SCHEMA</span></pre>
             </div>
@@ -443,8 +444,9 @@ performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
 <span class="k">this</span>.buf += chunk;
 <span class="k">return</span> JSON.<span class="f">parse</span>(<span class="f">repair</span>(<span class="k">this</span>.buf));
 <span class="c">// ✓ IncrementalParser.push</span>
-<span class="k">for</span> (; <span class="k">this</span>.pos &lt; <span class="k">this</span>.buf.length; <span class="k">this</span>.pos++)
-  <span class="c">// ¿cerró un producto? → JSON.parse de ese trozo</span></pre>
+<span class="k">for</span> (; <span class="k">this</span>.pos &lt; <span class="k">this</span>.buf.length; <span class="k">this</span>.pos++) {
+  <span class="c">// ¿cerró un producto? → JSON.parse de ese trozo</span>
+}</pre>
             </div>
           </div>
         </div>
@@ -459,13 +461,13 @@ performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
           <div class="grid-2" style="grid-template-columns: 1.05fr 0.95fr; align-items: start">
             <div class="code" data-focus='[["2-4", "Cada token solo actualiza los datos y pide un frame (una sola vez)."], ["6-7", "Una vez por frame, el navegador pinta…"], ["8-9", "…todo lo que cambió, por partes…"], ["10", "…y cede el hilo entre partes: si hubo un clic, se atiende ya."]]'>
               <div class="bar"><span>scheduler.ts</span><span>rAF + scheduler.yield()</span></div>
-<pre><span class="k">let</span> dirty = <span class="k">false</span>;
+<pre><span class="k">let</span> raf = <span class="n">0</span>;
 <span class="k">function</span> <span class="f">onToken</span>(ev) {
   store.<span class="f">apply</span>(ev);
-  <span class="k">if</span> (!dirty) { dirty = <span class="k">true</span>; <span class="f">requestAnimationFrame</span>(flush); }
+  <span class="k">if</span> (!raf) raf = <span class="f">requestAnimationFrame</span>(flush);
 }
 <span class="k">async function</span> <span class="f">flush</span>() {
-  dirty = <span class="k">false</span>;
+  raf = <span class="n">0</span>;
   <span class="k">for</span> (<span class="k">const</span> part <span class="k">of</span> store.<span class="f">takeChanges</span>()) {
     <span class="f">render</span>(part);
     <span class="mark"><span class="k">await</span> scheduler.<span class="f">yield</span>();</span>  <span class="c">// deja pasar clics</span>
@@ -550,10 +552,10 @@ res.body
               <div class="bar"><span>keyed.ts</span><span>actualiza solo lo que cambió</span></div>
 <pre><span class="k">const</span> nodes = <span class="k">new</span> <span class="f">Map</span>&lt;<span class="p">string</span>, <span class="p">HTMLElement</span>&gt;();
 
-<span class="k">function</span> <span class="f">upsert</span>(item: <span class="p">Product</span>) {
-  <span class="k">let</span> el = nodes.<span class="f">get</span>(<span class="mark">item.id</span>);
-  <span class="k">if</span> (!el) nodes.<span class="f">set</span>(item.id, (el = <span class="f">createCard</span>(item)));
-  <span class="f">patchText</span>(el, item);   <span class="c">// textContent, no HTML</span>
+<span class="k">function</span> <span class="f">upsert</span>(p: <span class="p">Product</span>) {
+  <span class="k">let</span> el = nodes.<span class="f">get</span>(<span class="mark">p.id</span>);
+  <span class="k">if</span> (!el) nodes.<span class="f">set</span>(p.id, (el = <span class="f">createCard</span>(p)));
+  <span class="f">patchText</span>(el, p);   <span class="c">// textContent, no HTML</span>
 }
 
 <span class="c">// reordenar con transición (Chrome 147+)</span>
@@ -618,12 +620,13 @@ grid.<span class="f">startViewTransition</span>?.(() =&gt; <span class="f">sortC
           <p class="eyebrow">// Interacción + cambio de URL + pintura visible</p>
           <h2 class="title">La UI generativa también navega: <span class="hl">mide las soft navs</span></h2>
           <div class="grid-2" style="grid-template-columns: 1.1fr 0.9fr; align-items: start">
-            <div class="code" data-focus='[["1-4", "Avisa cada vez que la app cambia de vista sin recargar."], ["6-11", "Mide la pintura de esa vista (su LCP), ligada al clic que la provocó."]]'>
+            <div class="code" data-focus='[["1-5", "Avisa cada vez que la app cambia de vista sin recargar."], ["7-12", "Mide la pintura de esa vista (su LCP), ligada al clic que la provocó."]]'>
               <div class="bar"><span>soft-navs.ts</span><span>Chrome 151+</span></div>
 <pre><span class="k">new</span> <span class="f">PerformanceObserver</span>((list) =&gt; {
   <span class="k">for</span> (<span class="k">const</span> nav <span class="k">of</span> list.<span class="f">getEntries</span>())
     <span class="f">startView</span>(nav.name, nav.<span class="mark">interactionId</span>);
-}).<span class="f">observe</span>({ type: <span class="s">'soft-navigation'</span>, buffered: <span class="k">true</span> });
+}).<span class="f">observe</span>({ type: <span class="s">'soft-navigation'</span>,
+             buffered: <span class="k">true</span> });
 
 <span class="k">new</span> <span class="f">PerformanceObserver</span>((list) =&gt; {
   <span class="k">for</span> (<span class="k">const</span> p <span class="k">of</span> list.<span class="f">getEntries</span>())

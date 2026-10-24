@@ -9,13 +9,13 @@ import { DEMO_URL, EVENT, REPO_URL, TALK_TITLE } from '../shared/config';
 import { downloadFile, keepsakeHTML, keepsakeMarkdown, type SavedNote } from '../shared/keepsake';
 import { ACCESORIOS, CABELLOS, DEFAULT_DOLL, EXPRESIONES, LEYENDA, PATRONES, PENAS, PIELES, TRAJES, normalizeDoll, quitapenasPNG, quitapenasSVG, randomDoll, type QuitapenasOptions } from '../shared/quitapenas';
 import { REACTIONS, getRealtime, type Reaction, type Realtime, type SlideState } from '../shared/realtime';
+import { esc } from '../shared/esc';
 
 const ICONS = { Brain, Check, Download, FileText, Flame, GitBranch, Heart, MessageCircleQuestion, NotebookPen, Radio, Send, Shuffle, Sparkles, Store, X };
 const REACTION_ICONS: Record<Reaction, IconNode> = { fire: Flame, heart: Heart, mind: Brain, ask: MessageCircleQuestion };
 const REACTION_SHORT: Record<Reaction, string> = { fire: 'Fuego', heart: 'Me gusta', mind: '¡Wow!', ask: 'Pregunta' };
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string, root: ParentNode = document) => root.querySelector<T>(sel)!;
-const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const icon = (node: IconNode, size = 20) => {
   const el = createElement(node);
   el.setAttribute('width', String(size));
@@ -67,7 +67,7 @@ interface DollState {
   saved: boolean;
   published: boolean;
 }
-let doll: DollState = store.get('doll', { name: '', pena: 0, opts: { ...DEFAULT_DOLL }, saved: false, published: false });
+const doll: DollState = store.get('doll', { name: '', pena: 0, opts: { ...DEFAULT_DOLL }, saved: false, published: false });
 doll.opts = normalizeDoll(doll.opts);
 
 /** Slide que se muestra en "En vivo" (puede ir detrás del en vivo si hay una nota sin guardar). */
@@ -261,7 +261,10 @@ function bindNoteBox(root: ParentNode, id: string, { followLiveOnSave }: { follo
   };
   btn.addEventListener('click', doSave);
   area.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) (e.preventDefault(), doSave());
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      doSave();
+    }
   });
 }
 

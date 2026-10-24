@@ -10,11 +10,11 @@ import { SLIDE_BY_ID } from '../shared/content';
 import { REPO_URL, SESSION_ID, prettyUrl, publicLiveUrl } from '../shared/config';
 import { PENAS, quitapenasSVG } from '../shared/quitapenas';
 import { getRealtime, REACTIONS, type AudienceQuestion, type DollData, type Reaction } from '../shared/realtime';
+import { esc } from '../shared/esc';
 
 type DeckStage = HTMLElement & { goTo(i: number): void; next(): void; prev(): void };
 
 const REACTION_ICONS: Record<Reaction, IconNode> = { fire: Flame, heart: Heart, mind: Brain, ask: MessageCircleQuestion };
-const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
 function icon(node: IconNode, size = 28, color?: string): SVGElement {
   const el = createElement(node);
@@ -156,7 +156,11 @@ export async function initLive(stage: DeckStage, sections: HTMLElement[]) {
     }
     if (visible.length) wall.querySelector('.wall-empty')?.remove();
     const keep = new Set(visible.slice(0, 48).map((d) => d.id));
-    for (const [id, t] of tiles) if (!keep.has(id)) (t.el.remove(), tiles.delete(id));
+    for (const [id, t] of tiles) {
+      if (keep.has(id)) continue;
+      t.el.remove();
+      tiles.delete(id);
+    }
     visible.slice(0, 48).forEach((d, i) => {
       const sig = JSON.stringify([d.name, d.pena, d.opts, d.hidden]);
       let t = tiles.get(d.id);

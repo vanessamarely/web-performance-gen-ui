@@ -4,9 +4,9 @@
 import { SLIDES, SLIDE_BY_ID } from '../shared/content';
 import { DEMO_URL, SESSION_ID, withSessionParams } from '../shared/config';
 import type { PresenterMsg } from '../deck/live';
+import { esc } from '../shared/esc';
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector<T>(sel)!;
-const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const bc = new BroadcastChannel(`wpgu-presenter-${SESSION_ID}`);
 const post = (m: PresenterMsg) => bc.postMessage(m);
 
@@ -73,8 +73,14 @@ setInterval(() => {
 $('[data-prev]').addEventListener('click', () => post({ type: 'prev' }));
 $('[data-nextbtn]').addEventListener('click', () => post({ type: 'next' }));
 addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') (e.preventDefault(), post({ type: 'next' }));
-  if (e.key === 'ArrowLeft' || e.key === 'PageUp') (e.preventDefault(), post({ type: 'prev' }));
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+    e.preventDefault();
+    post({ type: 'next' });
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+    e.preventDefault();
+    post({ type: 'prev' });
+  }
 });
 
 // ── Cronómetro (30 min) y ritmo vs. el guion ───────────────────────────

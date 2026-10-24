@@ -8,6 +8,7 @@ import { BY_ID, fmtQ } from '../catalog';
 import { flags } from '../lab/flags';
 import { metrics } from '../lab/metrics';
 import type { CompareBlock, HeroBlock, ProductPick, Promo, Tip, UIState } from './types';
+import { esc } from '../esc';
 
 export type ViewKind = 'home' | 'detail';
 
@@ -18,7 +19,6 @@ export interface Renderer {
   reorder(ids: string[]): void;
 }
 
-const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 export const saved = new Set<string>();
 
 // ── "Red" simulada para imágenes: la primera vez tardan (CDN lento), luego vienen de caché ──

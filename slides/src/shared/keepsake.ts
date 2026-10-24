@@ -4,6 +4,7 @@
 import { CHECKLIST, SLIDES } from './content';
 import { DEMO_URL, EVENT, REPO_URL, SLIDES_URL, SPEAKER, SPEAKER_HANDLE, TALK_TITLE, TALK_TITLE_ES } from './config';
 import { LEYENDA, PENAS, quitapenasSVG, type QuitapenasOptions } from './quitapenas';
+import { esc } from './esc';
 
 export interface SavedNote {
   text: string;
@@ -16,7 +17,6 @@ export interface KeepsakeInput {
   doll: { name: string; pena: number; opts: QuitapenasOptions } | null;
 }
 
-const esc = (s: unknown) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 const fmtDate = (d = new Date()) => d.toLocaleDateString('es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
 
 /** Slides que entran a la memoria: los marcados + cualquiera donde la persona escribió algo. */

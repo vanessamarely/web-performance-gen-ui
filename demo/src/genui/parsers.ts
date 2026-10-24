@@ -66,6 +66,11 @@ export class NaiveParser implements Parser {
  *  · propiedades de primer nivel (hero, compare, tips, promo, story…) → se emiten completas
  *  · objetos dentro de arrays de primer nivel (products[], pairings[]) → uno por uno
  * Cada carácter se recorre una sola vez; JSON.parse solo toca el fragmento de cada valor terminado.
+ *
+ * Alcance: SOLO soporta la forma del contrato de UI. La raíz debe ser un objeto; se emiten
+ * sus propiedades de primer nivel y los objetos dentro de arrays de primer nivel. No es un
+ * parser JSON general: no emite nada parcial de objetos anidados más profundo, y una raíz
+ * que sea array o escalar no produce estado.
  */
 export class IncrementalParser implements Parser {
   private buf = '';
