@@ -63,8 +63,8 @@ deck-stage > section, section[data-id] { position: relative; background: var(--b
 /* ── Marco de contenido ─────────────────────────────── */
 .frame { position: absolute; inset: 0; z-index: 1; padding: 58px 72px 74px; display: flex; flex-direction: column; }
 .card-frame { inset: 44px 50px; padding: 36px 52px 40px; background: var(--surface); border: var(--lw) solid var(--line); border-radius: var(--r-card); box-shadow: var(--glow); }
-.notch { position: absolute; right: 0; bottom: 0; z-index: 2; width: calc(21% + 50px); height: calc(14% + 44px); background: var(--bg); border-top: var(--lw) solid var(--line); border-left: var(--lw) solid var(--line); border-top-left-radius: var(--r-card); display: grid; place-items: center; padding: 0 50px 44px 0; }
-.notch img, .notch svg { width: 150px; height: auto; overflow: visible; }
+.notch { position: absolute; right: 0; bottom: 0; z-index: 2; box-sizing: border-box; width: calc(21% + 50px); height: calc(10% + 44px); background: var(--bg); border-top: var(--lw) solid var(--line); border-left: var(--lw) solid var(--line); border-top-left-radius: var(--r-card); display: grid; place-items: center; padding: 10px 16px; }
+.notch img, .notch svg { width: 140px; height: auto; max-height: 100%; overflow: visible; }
 /* Logo GDG animado: ensamblar al entrar al slide + respiración suave */
 .gdg-pill { transform-box: fill-box; transform-origin: center; }
 section[data-deck-active] .gdg-pill {
@@ -458,8 +458,8 @@ section[data-deck-active] .wiggle { animation: wiggle 1.2s ease-in-out infinite;
 .ph { display: flex; align-items: center; gap: 8px; }
 
 /* Zona del notch (guía DevFest: nada en el 21% derecho × 14% inferior): la columna derecha se detiene antes. */
-.card-frame .grid-2 > .stack:last-child { padding-bottom: 92px; }
-.card-frame .grid-2 > .code:last-child { margin-bottom: 92px; }
+.card-frame .grid-2 > .stack:last-child { padding-bottom: 40px; }
+.card-frame .grid-2 > .code:last-child { margin-bottom: 40px; }
 
 /* ── Preguntas del público (solo presentadora) ───────────────────────── */
 .qa-panel { position: fixed; top: 70px; right: 16px; z-index: 60; width: min(420px, calc(100vw - 32px)); max-height: calc(100dvh - 100px); display: grid; grid-template-rows: auto 1fr auto; background: #fff; color: #1e1e1e; border: 2px solid #1e1e1e; border-radius: 20px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25); font-family: 'Google Sans', system-ui, sans-serif; overflow: hidden; }
@@ -766,9 +766,9 @@ section:has(.weave.bottom) .footer { bottom: 40px; }
 
 .pm mark.p75 { font: 500 15px var(--mono); padding: 0 6px; border-radius: 6px; background: var(--ht-yellow); color: #1e1e1e; }
 /* Slides altos: el bloque centrado no debe entrar en la esquina del logo GDG. */
-section[data-id='bio'] .card-frame { padding-bottom: 150px; }
+section[data-id='bio'] .card-frame { padding-bottom: 90px; }
 section[data-id='villanos'] .villain { min-height: 250px; }
-section[data-id='villanos'] .card-frame { padding-bottom: 130px; }
+section[data-id='villanos'] .card-frame { padding-bottom: 80px; }
 
 /* Leyenda del mini trace (slide 9) */
 .trace-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
@@ -826,4 +826,4 @@ section[data-deck-active] .bigo-row .bars i { animation: bar-grow 600ms cubic-be
 section[data-id='parser'] .card-frame .grid-2 > .code:last-child { margin-bottom: 40px; }
 section[data-id='parser'] .perf-def { margin-bottom: 12px; }
 section[data-id='parser'] .code pre { line-height: 1.32; padding: 10px 14px; }
-section[data-id='parser'] .card-frame { padding-bottom: 110px; }
+section[data-id='parser'] .card-frame { padding-bottom: 64px; }
