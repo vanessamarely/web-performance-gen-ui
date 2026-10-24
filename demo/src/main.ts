@@ -110,6 +110,21 @@ addEventListener('message', (e) => {
 });
 if (embed && parent !== window) setInterval(() => parent.postMessage({ type: 'metrics', metrics, flags }, location.origin), 500);
 
+// Guion de la demo (laboratorio): cada paso en un clic, sin escribir en el escenario.
+document.addEventListener('demo:step', (e) => {
+  const step = (e as CustomEvent<string>).detail;
+  if (step === 'gen') void generate('Regalo de café bajo Q200');
+  if (step === 'save') root.querySelector<HTMLButtonElement>('[data-save]')?.click();
+  if (step === 'rank') {
+    const b = root.querySelector<HTMLButtonElement>('[data-sort]');
+    if (b) void ui.rank(b);
+  }
+  if (step === 'open') {
+    const id = root.querySelector<HTMLElement>('[data-open]')?.dataset.open;
+    if (id) navigate(`/p/${id}`);
+  }
+});
+
 const webmcp = registerTools({
   generate: (p) => generate(p).then(() => waitIdle()),
   open: (id) => (navigate(`/p/${id}`), waitIdle()),

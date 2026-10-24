@@ -72,6 +72,11 @@ const DECOR = [
   { traje: 2, patron: 0, cabello: 4, piel: 4, accesorio: 5, expresion: 3 },
   { traje: 0, patron: 1, cabello: 1, piel: 2, accesorio: 0, expresion: 1 },
 ];
+// Quitapenas que dan el consejo de cada sección (separadores 01–05).
+document.querySelectorAll<HTMLElement>('[data-doll-tip]').forEach((el) => {
+  const doll = DECOR[Number(el.dataset.dollTip) % DECOR.length];
+  el.querySelector('.tip-doll')!.innerHTML = quitapenasSVG(doll, 'Quitapenas');
+});
 document.querySelectorAll<HTMLElement>('[data-dolls]').forEach((el) => {
   const n = Number(el.dataset.dolls) || 3;
   el.innerHTML = Array.from({ length: n }, (_, i) => quitapenasSVG(DECOR[i % DECOR.length] ?? randomDoll(), 'Quitapenas').replace('<svg ', `<svg style="--i:${i}" `)).join('');

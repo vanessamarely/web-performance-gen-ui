@@ -195,3 +195,9 @@ details ol { padding-left: 18px; margin: 6px 0; display: grid; gap: 4px; }
 .cmp-cpu select { min-height: 44px; padding: 6px 10px; border: 2px solid var(--line); border-radius: 999px; background: var(--surface); }
 .cmp-table b.x { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: var(--p-green); font: 500 12px var(--mono); }
 .cmp-head form { max-width: 760px; }
+
+/* Guion de la demo en el laboratorio */
+.demo-script { margin: 0 0 12px; padding: 10px 12px; border: 2px dashed var(--line); border-radius: 14px; }
+.demo-script .mini-title { margin: 0 0 6px; font: 500 12px var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); }
+.demo-script ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.demo-script button { width: 100%; text-align: left; padding: 6px 10px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--p-blue); cursor: pointer; font-size: 14px; }

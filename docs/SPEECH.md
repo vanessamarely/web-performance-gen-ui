@@ -94,6 +94,8 @@ Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigat
 
 **Di:** "Regla número uno: antes de optimizar, se mide. Y en 2026 medir ya no es solo grabar un trace: DevTools tiene IA integrada y un servidor para que tus agentes de código midan por ti."
 
+**Haz:** aparece un quitapenas con el consejo "Mide en un celular lento, no solo en tu laptop." Léelo en voz alta como cierre de la frase (es un buen momento para una sonrisa).
+
 ### 9 · Performance panel ⏱ 5:30
 
 **Di:** "El panel Performance de Chrome DevTools cambió mucho:
@@ -128,6 +130,8 @@ Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigat
 
 **Di:** "Primer frente: renderizado. El modelo devuelve datos; tu UI decide cómo se ven, cuánto miden y cuándo se pintan."
 
+**Haz:** aparece un quitapenas con el consejo "Dale a cada componente su espacio antes de que llegue." Léelo en voz alta como cierre de la frase (es un buen momento para una sonrisa).
+
 ### 14 · Datos, no HTML ⏱ 9:30
 
 **Di:** "La decisión más importante: **que el modelo devuelva datos, no HTML.** El modelo elige componentes de un **catálogo cerrado**, como hero, producto, tabla o consejo, y devuelve JSON validado por un **schema**. La Prompt API de Chrome y la Gemini API aceptan ese schema. Y un detalle de performance: **ordena el schema pensando en el streaming.** Lo que va arriba del pliegue primero, el título y el hero, para que el LCP no espere al detalle. Ganas seguridad, porque no hay HTML arbitrario, accesibilidad por diseño y componentes que puedes medir."
@@ -147,6 +151,8 @@ Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigat
 ### 16 · Separador ⏱ 11:15
 
 **Di:** "Segundo frente: streaming. Queremos mostrar valor desde el primer token sin bloquear el hilo principal."
+
+**Haz:** aparece un quitapenas con el consejo "70 tokens por segundo no son 70 renders: pinta una vez por frame." Léelo en voz alta como cierre de la frase (es un buen momento para una sonrisa).
 
 ### 17 · Parsea una sola vez ⏱ 11:30
 
@@ -182,6 +188,8 @@ Y esto no es teoría: es el código real de la demo (sigue el modo foco). En cad
 
 **Di:** "Tercer frente: el DOM. Mover y actualizar nodos es mucho más barato que destruirlos y crearlos de nuevo."
 
+**Haz:** aparece un quitapenas con el consejo "No tires el DOM: recíclalo." Léelo en voz alta como cierre de la frase (es un buen momento para una sonrisa).
+
 ### 21 · Claves estables ⏱ 14:45
 
 **Di:** "Con `innerHTML` en cada actualización, en Mercadito se crean **unos 23.500 nodos** para una sola respuesta. Con **una clave estable por id**, un nodo por producto que se crea una vez y luego solo se actualiza el texto que cambió, son **unos 340**. Además se conserva el foco, el hover y las imágenes ya decodificadas. Y cuando la lista cambia de orden, la animas con **View Transitions con alcance de elemento**, desde Chrome 147.
@@ -202,6 +210,8 @@ Un dato curioso que encontré preparando la demo: si recreas **toda** la vista c
 
 **Di:** "Cuarto frente: el estado. En UI generativa suelen llegar varios streams a la vez."
 
+**Haz:** aparece un quitapenas con el consejo "La IA decide qué mostrar; el código calcula el resto." Léelo en voz alta como cierre de la frase (es un buen momento para una sonrisa).
+
 ### 24 · Estado fuera del render ⏱ 16:45
 
 **Di:** "Tres ideas: **un store por stream**, con lo que va llegando como borrador y lo validado como confirmado; y lo anterior se queda en pantalla hasta que llega su reemplazo, nunca una pantalla en blanco. **Suscripciones finas por clave**, con signals o `useSyncExternalStore`, para que un token actualice *un* componente y no la página entera. Y **lo derivado lo calcula el código, no el modelo**: totales, filtros y orden. Si es pesado, en un Web Worker. La IA decide *qué* mostrar; el código calcula todo lo demás."
@@ -217,6 +227,13 @@ Un dato curioso que encontré preparando la demo: si recreas **toda** la vista c
 ---
 
 ## 26 · Demo: Mercadito ⏱ 18:30 – 28:30 (8–10 min)
+
+**Textos listos (no hace falta escribir nada):**
+- En Mercadito, los botones bajo el buscador ya traen las peticiones: **"Regalo de café bajo Q200"** (la principal), "Textiles tejidos a mano", "Chocolate para compartir" y "Recuerdos para la oficina".
+- En el **laboratorio** (tecla **D**) está el **Guion de la demo**, un botón por paso: 1) Generar "Regalo de café bajo Q200", 2) ♡ Guardar la primera tarjeta, 3) Ordenar por recomendación (INP), 4) Abrir un producto (soft navigation), 5) Copiar el prompt para el agente.
+- En `/compare` el texto ya viene escrito: solo pulsa **Generar en ambos**.
+- Para AI assistance, el botón **Copiar** de cada interruptor (en "Cómo verlo en DevTools") trae la pregunta lista, por ejemplo: *"¿Qué elementos causan los layout shifts mientras se genera la UI y cómo reservo su espacio?"* o *"¿Por qué esta interacción tarda tanto en pintar y qué parte es processing duration?"*.
+- Prompt para el agente (también en `docs/AGENTES.md`): *"Usa chrome-devtools con emulate { cpuThrottlingRate: 4 }. Abre Mercadito, genera resultados, inicia un trace, haz click en 'Ordenar por recomendación' y analiza INPBreakdown. Mueve rankProducts a un Web Worker y vuelve a medir el INP."*
 
 **Di (intro, 20 s):** "Esto es Mercadito: un asistente de compras generativo para artesanías, café y cacao de Guatemala. Los productos y precios son ficticios. Tiene un laboratorio con cinco interruptores, uno por cada villano, y un HUD abajo que mide en vivo CLS, INP, LoAF, nodos creados, milisegundos de parseo y soft navigations."
 

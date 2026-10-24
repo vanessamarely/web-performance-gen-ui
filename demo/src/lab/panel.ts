@@ -59,6 +59,16 @@ export function mountLab(panel: HTMLElement, toggle: HTMLButtonElement, onChange
     panel.innerHTML = `<header><h2>Laboratorio</h2><button type="button" class="icon" data-close aria-label="Cerrar laboratorio">✕</button></header>
       <p class="hint">Cada interruptor arregla un villano. Cambia y vuelve a <b>Generar</b> para medir.</p>
       <div class="presets"><button type="button" data-all="0">Todo roto</button><button type="button" data-all="1">Todo arreglado</button></div>
+      <section class="demo-script" aria-label="Guion de la demo">
+        <p class="mini-title">Guion de la demo · un clic por paso</p>
+        <ol>
+          <li><button type="button" data-step="gen">Generar “Regalo de café bajo Q200”</button></li>
+          <li><button type="button" data-step="save">♡ Guardar la primera tarjeta</button></li>
+          <li><button type="button" data-step="rank">Ordenar por recomendación (INP)</button></li>
+          <li><button type="button" data-step="open">Abrir un producto (soft navigation)</button></li>
+          <li><button type="button" data-step="agent">Copiar prompt para el agente</button></li>
+        </ol>
+      </section>
       <label class="cpu">CPU simulada <select data-cpu>${[1, 4, 6]
         .map((f) => `<option value="${f}" ${cpu.factor === f ? 'selected' : ''}>${f}×${f === 1 ? ' (sin simular)' : ''}</option>`)
         .join('')}</select><small>Mejor: DevTools → Performance → CPU 4× o nivel calibrado.</small></label>
@@ -91,6 +101,14 @@ export function mountLab(panel: HTMLElement, toggle: HTMLButtonElement, onChange
   });
   panel.addEventListener('click', async (e) => {
     const t = e.target as HTMLElement;
+    const step = t.closest<HTMLElement>('[data-step]');
+    if (step) {
+      if (step.dataset.step === 'agent') {
+        await navigator.clipboard?.writeText(GUIDE.worker.agent).catch(() => undefined);
+        step.textContent = 'Prompt copiado ✓';
+      } else document.dispatchEvent(new CustomEvent('demo:step', { detail: step.dataset.step }));
+      return;
+    }
     const sw = t.closest<HTMLElement>('[data-flag]');
     if (sw) {
       setFlag(sw.dataset.flag as keyof Flags, sw.getAttribute('aria-checked') !== 'true');

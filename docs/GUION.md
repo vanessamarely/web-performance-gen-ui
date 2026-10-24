@@ -46,6 +46,8 @@
 
 ## Demo (10 min)
 
+Todo con un clic: botones de peticiones bajo el buscador y, en el laboratorio (tecla **D**), el **Guion de la demo** (generar, guardar, ordenar, abrir producto, copiar prompt del agente).
+
 1. **`/compare`** (1 min, CPU 4× por defecto): "Mismo stream a los dos". Señala los **recuadros rojos** (saltos) y la tabla con cuántas veces mejor: ~66× menos nodos, ~12× menos renders, CLS ~0,17 → ~0,02.
 2. **Mercadito roto + DevTools** (3 min): Performance → Grabar → genera *"regalo de café bajo Q200"* → Detener. Muestra la pista *Mercadito · GenUI*, el insight de **layout shift** → clic derecho → **Ask AI**. Enciende **Reservar espacio** y repite: CLS ≈ 0.
 3. **Hilo bloqueado** (2 min): con CPU 4×, haz clic en "♡ Guardar" mientras genera. Enciende **Parser incremental**, **Un render por frame** y **Claves estables**: el HUD baja de cientos de renders y miles de nodos a una decena y unos cientos.
