@@ -98,7 +98,7 @@ export const SLIDES: SlideContent[] = [
     title: 'Las métricas que importan (y lo nuevo de 2026)',
     summary: [
       'Core Web Vitals: LCP ≤ 2,5 s · INP ≤ 200 ms · CLS ≤ 0,1 (percentil 75 de usuarios reales).',
-      'Long Animation Frames (LoAF) explica el porqué de un mal INP: qué script bloqueó el frame.',
+      'LoAF: detecta frames de más de 50 ms y ayuda a investigar scripts asociados a un INP alto. Es diagnóstico, no una Core Web Vital.',
       'Soft navigations: API estable desde Chrome 151; CrUX publica métricas experimentales con soft navs desde octubre de 2026.',
       'Por ahora son experimentales: las métricas estables de Core Web Vitals no cambian mientras se evalúan. CrUX Vis ya las muestra.',
     ],
@@ -113,7 +113,7 @@ export const SLIDES: SlideContent[] = [
     title: 'Cinco lugares donde se rompe una UI generativa',
     summary: [
       'Layout shift: el contenido nuevo empuja lo que ya leías (CLS).',
-      'Hilo bloqueado: renderizar en cada token congela clics y scroll (INP, LoAF).',
+      'Hilo bloqueado: renderizar en cada token puede retrasar clics y scroll (INP); LoAF ayuda a investigar los frames largos.',
       'Re-parseo: volver a parsear todo el JSON en cada token es O(n²).',
       'DOM desechable: innerHTML recrea miles de nodos y se pierde el foco. Y navegaciones suaves que nadie mide.',
     ],
@@ -141,7 +141,7 @@ export const SLIDES: SlideContent[] = [
       'Live metrics: LCP, INP y CLS locales al instante, junto a los datos de campo de CrUX.',
       'Insights: el panel te dice qué causó el layout shift o el INP alto, ahora también por soft navigation.',
       'Overrides de nivel de CPU calibrados para reproducir equipos lentos de forma consistente.',
-      'En un mismo trace ves tu código (tus pistas: stream, parser, render) junto a sus efectos: frames lentos (LoAF), layout shifts y soft navigations.',
+      'En el trace ves tus pistas (stream, parser, render) junto al trabajo de los frames, los layout shifts y las soft navigations. LoAF ayuda a investigar frames de más de 50 ms.',
     ],
     notes: 'Abre DevTools en la demo si da tiempo: Live metrics con interacción. Soft navs en Live metrics desde Chrome 152 e Insights completos en 153/154.',
     time: '5:30',

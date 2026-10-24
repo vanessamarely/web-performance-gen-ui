@@ -68,7 +68,7 @@ Hilo de toda la charla, en una frase: **"La IA ya no responde texto, responde in
 
 ### 6 · Métricas 2026 ⏱ 3:30
 
-**Di:** "Ahora los números que hay que recordar. Una página está 'bien' cuando, en el percentil 75: **LCP de 2,5 segundos o menos, INP de 200 milisegundos o menos y CLS de 0,1 o menos.** Para entender *por qué* un INP es malo existe una herramienta muy útil: **Long Animation Frames, LoAF**, que te dice qué script bloqueó cada frame.
+**Di:** "Ahora los números que hay que recordar. Una página está 'bien' cuando, en el percentil 75: **LCP de 2,5 segundos o menos, INP de 200 milisegundos o menos y CLS de 0,1 o menos.** Para investigar un INP alto tenemos **Long Animation Frames, LoAF**: una API de diagnóstico que registra frames de más de 50 ms y ayuda a identificar los scripts que participaron. No es una Core Web Vital, y no significa que todo ese tiempo bloqueara los clics.
 
 Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigations**. Una app de una sola página, o una UI generativa, cambia de vista y de URL sin recargar el documento. Hasta ahora, las métricas de campo solo veían la carga inicial. **Desde Chrome 151 existe la API de soft navigations**, DevTools ya las muestra en Live metrics e Insights (Chrome 152 a 154), y **desde octubre de 2026 CrUX publica LCP, INP y CLS experimentales que incluyen soft navigations.** Por ahora son **experimentales**: las Core Web Vitals estables no cambian mientras se evalúan, y CrUX Vis ya las muestra. O sea: lo que pasa *después* de la primera carga, que es justo donde vive la UI generativa, empieza a contar."
 
@@ -102,7 +102,7 @@ Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigat
 - **Live metrics**: apenas lo abres ves tu LCP, INP y CLS locales en tiempo real, al lado de los datos de campo de CrUX, ahora también por soft navigation.
 - **Insights**: en vez de leer el trace a ojo, el panel te dice *qué* causó el layout shift o el INP alto, y en qué vista de tu SPA.
 - **Niveles de CPU calibrados**: puedes reproducir 'un celular de gama baja' de forma consistente.
-- **Un trace que cuenta la historia completa** (señala el dibujo y su leyenda): arriba, el hilo principal; lo rayado es un frame lento, un LoAF, más de 50 ms en los que la página no responde. En rojo, los layout shifts. En azul, lila y verde, *mis* etapas: stream, parser, render; eso son las pistas propias, que les explico en un momento. Y en amarillo, una soft navigation: el cambio de vista sin recargar. La gracia es ver juntos la **causa**, mi código, y el **efecto**, el frame lento o el salto."
+- **Un trace que cuenta la historia completa** (señala el dibujo y su leyenda): arriba, el hilo principal. En la pista Frames, los patrones distinguen frames parcialmente presentados o descartados; no identifican por sí solos un LoAF. LoAF registra frames de más de 50 ms y aporta datos de los scripts que participaron, algo útil para investigar un INP alto, aunque no implica que todo el frame bloqueara la página. En rojo, los layout shifts. En azul, lila y verde, *mis* etapas: stream, parser, render; eso son las pistas propias, que les explico en un momento. Y en amarillo, una soft navigation: el cambio de vista sin recargar. La gracia es ver juntos la **causa**, mi código, y el **efecto**, el frame lento o el salto."
 
 **Haz (opcional, si vas a tiempo):** abre DevTools en Mercadito y muestra Live metrics 15 segundos.
 
@@ -170,7 +170,7 @@ Y esto no es teoría: es el código real de la demo (sigue el modo foco). En cad
 
 ### 18 · Un render por frame ⏱ 12:30
 
-**Di:** "70 tokens por segundo no son 70 renders por segundo. La pantalla pinta, como mucho, una vez por frame. Así que **agrupa los cambios y renderiza una vez por frame** con `requestAnimationFrame`. Y si el trabajo es largo, **cede el hilo** con `scheduler.yield()`: le das al navegador la oportunidad de atender un clic a mitad del trabajo, que es justo lo que mide el INP. Para encontrar culpables, observa `long-animation-frame`: te dice qué script bloqueó cada frame. En la demo, el mismo stream pasa de 210 renders a 8."
+**Di:** "70 tokens por segundo no son 70 renders por segundo. La pantalla pinta, como mucho, una vez por frame. Así que **agrupa los cambios y renderiza una vez por frame** con `requestAnimationFrame`. Y si el trabajo es largo, **cede el hilo** con `scheduler.yield()`: le das al navegador la oportunidad de atender un clic a mitad del trabajo, que es justo lo que mide el INP. Para investigar frames largos, observa `long-animation-frame`: registra los que superan 50 ms y aporta datos de los scripts participantes. En la demo, el mismo stream pasa de 210 renders a 8."
 
 **Clave:** rAF + `scheduler.yield()` + LoAF; 210 → 8 renders.
 

@@ -27,7 +27,8 @@ const GUIDE: Record<keyof Flags, { devtools: string[]; ai: string; agent: string
   },
   frame: {
     devtools: [
-      'Performance → pista Main: los frames largos aparecen como "Long animation frame" (rayados).',
+      'Performance → graba durante la interacción y revisa Main e Interactions para localizar el trabajo largo.',
+      'LoAF: mira el recuento y el máximo en el HUD, o consulta sus entradas en la consola. El patrón rayado de Frames indica frames parcialmente presentados o descartados; no identifica LoAF por sí solo.',
       'Insight "INP breakdown" si haces clic en una tarjeta mientras se genera.',
       'Consola: new PerformanceObserver(l => console.table(l.getEntries())).observe({type: "long-animation-frame", buffered: true})',
     ],
