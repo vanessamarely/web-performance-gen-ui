@@ -100,7 +100,7 @@ export const SLIDES: SlideContent[] = [
       'Core Web Vitals: LCP ≤ 2,5 s · INP ≤ 200 ms · CLS ≤ 0,1 (percentil 75 de usuarios reales).',
       'Long Animation Frames (LoAF) explica el porqué de un mal INP: qué script bloqueó el frame.',
       'Soft navigations: API estable desde Chrome 151; CrUX publica métricas experimentales con soft navs desde octubre de 2026.',
-      'Las métricas experimentales (LCP, INP y CLS con soft navs) tienen como meta graduarse en mayo de 2027.',
+      'Por ahora son experimentales: las métricas estables de Core Web Vitals no cambian mientras se evalúan. CrUX Vis ya las muestra.',
     ],
     notes: 'Las SPA y las UIs generativas cambian la URL sin recargar: hasta ahora CrUX solo veía la carga inicial. Eso está cambiando. Menciona que en sitios con muchas soft navs el LCP "bueno" en Android pasó de 26 % a 87 %.',
     time: '3:30',

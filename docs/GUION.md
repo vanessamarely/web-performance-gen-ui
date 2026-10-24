@@ -17,7 +17,7 @@
 | 3 | Quién soy | 1:30 | 20 s. |
 | 4 | Cada token cuesta | 2:00 | La tesis. |
 | 5 | ¿Qué es web performance? | 2:40 | Para quien no viene de performance: "¿a quién le ha saltado un botón justo cuando iba a tocarlo?". Tres preguntas = tres métricas (¿ya cargó? LCP · ¿me hizo caso? INP · ¿se quedó quieto? CLS). Laboratorio vs. campo y p75. Los números van en el siguiente slide. |
-| 6 | Métricas 2026 | 3:30 | LCP/INP/CLS + LoAF. **Soft navs**: API en Chrome 151, CrUX experimental desde octubre 2026, meta mayo 2027. |
+| 6 | Métricas 2026 | 3:30 | LCP/INP/CLS + LoAF. **Soft navs**: API en Chrome 151, CrUX experimental desde octubre 2026 (sin fecha confirmada para ser estables). |
 | 7 | Dónde se rompe | 4:30 | Los 5 villanos = los 5 interruptores de la demo. |
 | 8 | 01 Medir con agentes | 5:15 | — |
 | 9 | Performance panel | 5:30 | Live metrics + CrUX, Insights (también por soft nav), CPU calibrada, pistas propias. |

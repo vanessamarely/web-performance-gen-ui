@@ -70,9 +70,9 @@ Hilo de toda la charla, en una frase: **"La IA ya no responde texto, responde in
 
 **Di:** "Ahora los números que hay que recordar. Una página está 'bien' cuando, en el percentil 75: **LCP de 2,5 segundos o menos, INP de 200 milisegundos o menos y CLS de 0,1 o menos.** Para entender *por qué* un INP es malo existe una herramienta muy útil: **Long Animation Frames, LoAF**, que te dice qué script bloqueó cada frame.
 
-Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigations**. Una app de una sola página, o una UI generativa, cambia de vista y de URL sin recargar el documento. Hasta ahora, las métricas de campo solo veían la carga inicial. **Desde Chrome 151 existe la API de soft navigations**, DevTools ya las muestra en Live metrics e Insights (Chrome 152 a 154), y **desde octubre de 2026 CrUX publica LCP, INP y CLS experimentales que incluyen soft navigations.** La meta es que dejen de ser experimentales en **mayo de 2027**, y ahí Search Console empezará a usar esos datos. O sea: lo que pasa *después* de la primera carga, que es justo donde vive la UI generativa, empieza a contar."
+Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigations**. Una app de una sola página, o una UI generativa, cambia de vista y de URL sin recargar el documento. Hasta ahora, las métricas de campo solo veían la carga inicial. **Desde Chrome 151 existe la API de soft navigations**, DevTools ya las muestra en Live metrics e Insights (Chrome 152 a 154), y **desde octubre de 2026 CrUX publica LCP, INP y CLS experimentales que incluyen soft navigations.** Por ahora son **experimentales**: las Core Web Vitals estables no cambian mientras se evalúan, y CrUX Vis ya las muestra. O sea: lo que pasa *después* de la primera carga, que es justo donde vive la UI generativa, empieza a contar."
 
-**Clave:** los tres umbrales; LoAF como diagnóstico; soft navs (Chrome 151 → CrUX octubre 2026 → meta mayo 2027).
+**Clave:** los tres umbrales; LoAF como diagnóstico; soft navs (Chrome 151 → CrUX experimental desde octubre 2026; sin fecha confirmada para ser estables, no la menciones).
 
 ### 7 · Dónde se rompe ⏱ 4:30
 
@@ -272,7 +272,7 @@ Un dato curioso que encontré preparando la demo: si recreas **toda** la vista c
 
 - **"¿Esto aplica a React, Angular o Vue?"** Sí: las ideas son agnósticas. En React: `key` estable, `useSyncExternalStore`, `startTransition` con cuidado. En Angular: `track` en `@for`, signals y `ChangeDetectionStrategy.OnPush`.
 - **"¿INP reemplazó a FID?"** Sí, desde marzo de 2024 INP es Core Web Vital en lugar de FID.
-- **"¿Las soft navigations ya afectan el SEO?"** Todavía no: son experimentales en CrUX desde octubre de 2026 y la meta para pasar a estables es mayo de 2027, cuando Search Console usará esos datos.
+- **"¿Las soft navigations ya afectan el SEO?"** Todavía no: son experimentales en CrUX desde octubre de 2026 y las Core Web Vitals estables no cambian mientras se evalúan. Google aún no confirma cuándo pasarán a estables.
 - **"¿Necesito pagar por DevTools MCP o AI assistance?"** DevTools MCP es open source (`npx chrome-devtools-mcp@latest`). AI assistance viene en Chrome; revisa la disponibilidad para tu cuenta y región.
 - **"¿Y si no puedo usar un parser incremental?"** Como mínimo, no parsees en cada token: agrupa por frame y parsea solo lo nuevo o por bloques completos.
 - **"¿Qué tan confiable es la IA de DevTools?"** Úsala como copiloto: te acerca a la causa, pero confirma en el trace y vuelve a medir.
