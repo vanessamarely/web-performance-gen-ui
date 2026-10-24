@@ -5,7 +5,7 @@
 //  · Quitapenas y memoria se generan EN EL DISPOSITIVO: tus notas nunca salen del teléfono.
 import { Brain, Check, Download, FileText, Flame, GitBranch, Heart, MessageCircleQuestion, NotebookPen, Radio, Send, Shuffle, Sparkles, Store, X, createElement, createIcons, type IconNode } from 'lucide';
 import { SLIDES, SLIDE_BY_ID, type SlideContent } from '../shared/content';
-import { DEMO_URL, EVENT, REPO_URL, TALK_TITLE } from '../shared/config';
+import { DEMO_URL, EVENT, REPO_URL, SKILL_URL, TALK_TITLE } from '../shared/config';
 import { downloadFile, keepsakeHTML, keepsakeMarkdown, type SavedNote } from '../shared/keepsake';
 import { ACCESORIOS, CABELLOS, DEFAULT_DOLL, EXPRESIONES, LEYENDA, PATRONES, PENAS, PIELES, TRAJES, normalizeDoll, quitapenasPNG, quitapenasSVG, randomDoll, type QuitapenasOptions } from '../shared/quitapenas';
 import { REACTIONS, getRealtime, type Reaction, type Realtime, type SlideState } from '../shared/realtime';
@@ -386,6 +386,7 @@ function renderEnd(screen: HTMLElement) {
     <div class="stats"><span>${SLIDES.filter((s) => s.inSummary).length} ideas clave</span><span>${n} ${n === 1 ? 'nota' : 'notas'}</span><span>${doll.saved ? '1 quitapenas' : 'sin quitapenas'}</span></div>
     ${doll.saved ? `<div class="end-doll">${quitapenasSVG(doll.opts, doll.name)}<div><b>${esc(doll.name)}</b><span>“${esc(PENAS[doll.pena])}”</span></div></div>` : `<button class="btn wide" type="button" data-go-doll>${icon(Sparkles, 18)} Crear mi quitapenas para la memoria</button>`}
     ${keepsakeButtons()}
+    <a class="btn wide" href="${SKILL_URL}" target="_blank" rel="noreferrer">${icon(Sparkles, 18)} Skill para tu agente de código</a>
     <a class="btn wide ghost" href="${REPO_URL}" target="_blank" rel="noreferrer">${icon(GitBranch, 18)} Ver el repositorio</a>
   </section>`;
   screen.querySelector('[data-go-doll]')?.addEventListener('click', () => go('doll'));

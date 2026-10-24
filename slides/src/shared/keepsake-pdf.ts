@@ -5,7 +5,7 @@
 // fuente no tiene (≤, →, ✓…) se traducen a equivalentes legibles.
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage, type RGB } from 'pdf-lib';
 import { CHECKLIST } from './content';
-import { EVENT, PUBLIC_DEMO_URL as DEMO_URL, PUBLIC_SLIDES_URL as SLIDES_URL, REPO_URL, SPEAKER, SPEAKER_HANDLE, TALK_TITLE, TALK_TITLE_ES } from './config';
+import { EVENT, PUBLIC_DEMO_URL as DEMO_URL, PUBLIC_SLIDES_URL as SLIDES_URL, REPO_URL, SKILL_URL, SPEAKER, SPEAKER_HANDLE, TALK_TITLE, TALK_TITLE_ES } from './config';
 import { fmtDate, keepsakeSlides, type KeepsakeInput } from './keepsake';
 import { LEYENDA, PENAS, quitapenasPNGDataUrl } from './quitapenas';
 
@@ -168,7 +168,7 @@ export async function keepsakePDF({ nickname, notes, doll }: KeepsakeInput): Pro
   CHECKLIST.forEach(([h, p], i) => w.text(`${i + 1}. ${h}: ${p}`, { size: 10, x: M + 6, width: W - 2 * M - 6 }));
   w.space(10);
   w.text('Enlaces', { font: f.b, size: 12 });
-  for (const l of [`Web de Vanessa: https://vanessamarely.dev`, `Repo: ${REPO_URL}`, `Slides: ${SLIDES_URL}`, `Demo: ${DEMO_URL}`]) w.text(l, { size: 10 });
+  for (const l of [`Web de Vanessa: https://vanessamarely.dev`, `Repo: ${REPO_URL}`, `Skill para tu agente: ${SKILL_URL}`, `Slides: ${SLIDES_URL}`, `Demo: ${DEMO_URL}`]) w.text(l, { size: 10 });
 
   // Pie con número de página en todas
   const pages = pdf.getPages();

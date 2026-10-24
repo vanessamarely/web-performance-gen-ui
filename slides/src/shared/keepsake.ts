@@ -2,7 +2,7 @@
 // Se genera en el celular (nada sale del dispositivo) como un HTML autocontenido que se ve
 // bien offline, se puede imprimir a PDF y se comparte como archivo. También hay versión .md.
 import { CHECKLIST, SLIDES } from './content';
-import { EVENT, PUBLIC_DEMO_URL as DEMO_URL, PUBLIC_SLIDES_URL as SLIDES_URL, REPO_URL, SPEAKER, SPEAKER_HANDLE, TALK_TITLE, TALK_TITLE_ES } from './config';
+import { EVENT, PUBLIC_DEMO_URL as DEMO_URL, PUBLIC_SLIDES_URL as SLIDES_URL, REPO_URL, SKILL_URL, SPEAKER, SPEAKER_HANDLE, TALK_TITLE, TALK_TITLE_ES } from './config';
 import { LEYENDA, PENAS, quitapenasSVG, type QuitapenasOptions } from './quitapenas';
 import { esc } from './esc';
 
@@ -43,7 +43,7 @@ export function keepsakeMarkdown({ nickname, notes, doll }: KeepsakeInput): stri
   }
   out.push('', '## 10 reglas para una UI generativa rápida');
   CHECKLIST.forEach(([h, p], i) => out.push(`${i + 1}. **${h}:** ${p}`));
-  out.push('', '---', `- Web de Vanessa: https://vanessamarely.dev`, `- Repo: ${REPO_URL}`, `- Slides: ${SLIDES_URL}`, `- Demo: ${DEMO_URL}`, '');
+  out.push('', '---', `- Web de Vanessa: https://vanessamarely.dev`, `- Repo: ${REPO_URL}`, `- Skill para tu agente de código: ${SKILL_URL}`, `- Slides: ${SLIDES_URL}`, `- Demo: ${DEMO_URL}`, '');
   return out.join('\n');
 }
 
@@ -141,7 +141,7 @@ export function keepsakeHTML({ nickname, notes, doll }: KeepsakeInput): string {
   </section>
   <section class="card">
     <p class="eyebrow">// Enlaces</p>
-    <p style="margin:0">Web de Vanessa: <a href="https://vanessamarely.dev">vanessamarely.dev</a><br>Repo: <a href="${esc(REPO_URL)}">${esc(REPO_URL)}</a><br>Slides: <a href="${esc(SLIDES_URL)}">${esc(SLIDES_URL)}</a><br>Demo: <a href="${esc(DEMO_URL)}">${esc(DEMO_URL)}</a></p>
+    <p style="margin:0">Web de Vanessa: <a href="https://vanessamarely.dev">vanessamarely.dev</a><br>Repo: <a href="${esc(REPO_URL)}">${esc(REPO_URL)}</a><br>Skill para tu agente: <a href="${esc(SKILL_URL)}">${esc(SKILL_URL)}</a><br>Slides: <a href="${esc(SLIDES_URL)}">${esc(SLIDES_URL)}</a><br>Demo: <a href="${esc(DEMO_URL)}">${esc(DEMO_URL)}</a></p>
   </section>
   <footer>Generada en tu celular · tus notas nunca salieron de tu dispositivo</footer>
 </main>

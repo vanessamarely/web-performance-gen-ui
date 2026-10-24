@@ -275,7 +275,7 @@ Un dato curioso que encontré preparando la demo: si recreas **toda** la vista c
 
 ### 29 · Checklist ⏱ 29:20
 
-**Di:** "Diez reglas para llevarse: mide primero; datos, no HTML; reserva el espacio; parser incremental; un render por frame; cede el hilo; claves estables; recicla listas largas; estado fuera del render; y mide las soft navigations. Están en su memoria descargable."
+**Di:** "Diez reglas para llevarse: mide primero; datos, no HTML; reserva el espacio; parser incremental; un render por frame; cede el hilo; claves estables; recicla listas largas; estado fuera del render; y mide las soft navigations. Están en su memoria descargable. Y si usan un agente de código, llévenselas en forma de **skill**: está en el repo, en `skills/web-performance-genui`. Su agente aplicará estas reglas cuando construya una UI con streaming… y medirá antes y después."
 
 ### 30 · ¡Maltiox! ⏱ 29:45
 

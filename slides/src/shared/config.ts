@@ -1,6 +1,8 @@
 export const REPO_OWNER = 'vanessamarely';
 export const REPO_NAME = 'web-performance-gen-ui';
 export const REPO_URL = `https://github.com/${REPO_OWNER}/${REPO_NAME}`;
+/** Skill para agentes de código con las prácticas de la charla. */
+export const SKILL_URL = `${REPO_URL}/tree/main/skills/web-performance-genui`;
 export const PRESENTER_GITHUB_ID = '4331491';
 
 export const EVENT = 'DevFest Guatemala 2026';

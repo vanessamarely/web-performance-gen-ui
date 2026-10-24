@@ -44,7 +44,7 @@ Resumen rápido para tener a la vista. El texto completo de cada slide está en 
 | 26 | **Demo · Mercadito** | 18:30 | Ver guion de la demo ↓ (8–10 min). Plan B: el clip del slide se reproduce sin red. |
 | 27 | Receta | 28:30 | Reproduce → graba → pregunta a la IA → delega al agente → confirma en campo. |
 | 28 | Muro de quitapenas | 29:00 | Lee 2–3 penas y las más repetidas. Muestra los 48 más recientes. Clic en uno para ocultarlo (moderación). |
-| 29 | Checklist | 29:20 | Las 10 reglas: "están en su memoria en PDF". |
+| 29 | Checklist | 29:20 | Las 10 reglas: "están en su memoria en PDF". Y el **skill** para su agente: `skills/web-performance-genui` en el repo (también en el celular y en la memoria). |
 | 30 | ¡Maltiox! | 29:45 | "Gracias en k'iche'. Descarguen su memoria: botón *Descargar memoria (PDF)*." Menciona vanessamarely.dev. Preguntas (tecla **Q**). |
 
 ## Demo (10 min)

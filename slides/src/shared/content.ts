@@ -527,6 +527,7 @@ for (const on of [onLCP, onINP, onCLS])
     summary: [
       'Mide primero (DevTools + agentes) · Datos, no HTML · Reserva el espacio · Parser incremental · Un render por frame.',
       'Cede el hilo con scheduler.yield() · Claves estables · Recicla listas largas · Estado fuera del render · Mide las soft navigations.',
+      'Llévalas a tu agente de código: el skill web-performance-genui está en el repo (skills/web-performance-genui).',
     ],
     notes: 'Las 10 reglas también están en el README y en su memoria descargable.',
     time: '29:20',

@@ -82,6 +82,22 @@ node scripts/record-clips.mjs
 | `slides/public/clips/ranking-inp.webm` | "Ordenar por recomendación" con `?preset=broken&cpu=4` vs. `?preset=fixed` |
 | `docs/traces/mercadito-{broken,fixed}.json` | Generar + ordenar con CPU 4×. Ábrelos en DevTools → Performance → *Load profile*: aparece la pista **Mercadito · GenUI** (Stream, Parser, Render, Ranking). No se versionan (`.gitignore`). |
 
+## Skill para tu agente de código
+
+[`skills/web-performance-genui`](skills/web-performance-genui) convierte lo de la charla en un **Agent Skill**: tu agente (Claude Code, Gemini CLI, Antigravity, Cursor…) aplica las 10 reglas cuando construye o revisa una UI que se pinta en streaming, y **mide antes y después** con Chrome DevTools MCP.
+
+- `SKILL.md`: cuándo usarlo, flujo de trabajo, las 10 reglas, antipatrones y formato de reporte.
+- `references/patrones.md`: patrones de código (todos compilan con TypeScript estricto) y equivalencias para React, Angular y Vue.
+- `references/verificar.md`: cómo medir con DevTools MCP o el panel Performance, y umbrales.
+
+Instalación en Claude Code (para todos tus proyectos):
+
+```bash
+git clone --depth 1 https://github.com/vanessamarely/web-performance-gen-ui /tmp/wpgu && mkdir -p ~/.claude/skills && cp -R /tmp/wpgu/skills/web-performance-genui ~/.claude/skills/
+```
+
+Solo para un proyecto, copia la carpeta en `.claude/skills/` del proyecto. En agentes sin skills, usa el contenido de `SKILL.md` como `AGENTS.md`.
+
 ## Correr en local
 
 ```bash
