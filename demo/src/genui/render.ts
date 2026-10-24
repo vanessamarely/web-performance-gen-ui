@@ -32,7 +32,8 @@ export function wireImages(scope: ParentNode) {
       img.src = src;
       return;
     }
-    const delay = 250 + ((imgSeq++ * 137) % 600);
+    // Red realista (igual en roto y arreglado): 0,6–1,8 s la primera vez.
+    const delay = 600 + ((imgSeq++ * 337) % 1200);
     setTimeout(() => {
       img.src = src;
       img.addEventListener('load', () => loadedSrc.add(src), { once: true });

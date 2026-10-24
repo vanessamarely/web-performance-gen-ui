@@ -180,3 +180,18 @@ details ol { padding-left: 18px; margin: 6px 0; display: grid; gap: 4px; }
 @media (max-width: 820px) { .cmp-grid { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 ::view-transition-group(*) { animation-duration: 380ms; }
+
+/* ── Visualización de saltos y congelamientos (para el público) ─── */
+.vis-layer { position: fixed; inset: 0; z-index: 35; pointer-events: none; }
+.vis-shift { position: fixed; box-sizing: border-box; border: 3px solid #ea4335; background: rgba(234, 67, 53, 0.18); border-radius: 10px; animation: vis-shift 1100ms ease-out forwards; }
+.vis-shift[data-dy]::after { content: attr(data-dy); position: absolute; top: 6px; left: 6px; font: 700 14px var(--mono); color: #fff; background: #ea4335; padding: 2px 8px; border-radius: 999px; }
+@keyframes vis-shift { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
+.vis-freeze { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 12px 22px; border-radius: 999px; border: 3px solid #1e1e1e; background: #ffd427; color: #1e1e1e; font: 700 20px var(--sans); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25); animation: vis-freeze 1600ms ease-out forwards; }
+@keyframes vis-freeze { 0% { opacity: 0; transform: translate(-50%, -40%); } 12% { opacity: 1; transform: translate(-50%, -50%); } 80% { opacity: 1; } 100% { opacity: 0; } }
+.cpu input[type='checkbox'] { justify-self: start; width: 20px; height: 20px; accent-color: var(--green); }
+@media (prefers-reduced-motion: reduce) { .vis-shift, .vis-freeze { animation-duration: 1600ms !important; } }
+
+.cmp-cpu { display: flex; align-items: center; gap: 6px; font-weight: 500; white-space: nowrap; }
+.cmp-cpu select { min-height: 44px; padding: 6px 10px; border: 2px solid var(--line); border-radius: 999px; background: var(--surface); }
+.cmp-table b.x { display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px; background: var(--p-green); font: 500 12px var(--mono); }
+.cmp-head form { max-width: 760px; }

@@ -37,6 +37,7 @@ import { quitapenasSVG, randomDoll } from '../shared/quitapenas';
 import { animateNotchLogos } from './gdg-logo';
 import { initLive } from './live';
 import { initEventScreen } from './screen';
+import { initCodeFocus } from './code-focus';
 
 type DeckStage = HTMLElement & { goTo(i: number): void; next(): void; prev(): void };
 
@@ -230,5 +231,8 @@ addEventListener('keydown', (e) => {
 // ── En vivo ──────────────────────────────────────────────────────────
 // ── Pantalla del evento (1680×672): slide 16:9 al centro + laterales con QR y progreso ──
 const eventScreen = initEventScreen(stage, sections);
+
+// ── Modo foco en el código: una idea a la vez (↓/↑ o clic) ──
+initCodeFocus(stage, sections);
 
 initLive(stage, sections).catch((err) => console.error('[live]', err));

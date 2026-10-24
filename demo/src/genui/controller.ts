@@ -1,6 +1,6 @@
 // Orquesta stream → parser → estado → render según los interruptores del laboratorio.
 // Cada etapa deja su pista en el panel Performance (Mercadito · GenUI).
-import { WORK, burn, flags } from '../lab/flags';
+import { WORK, burn, cpu, flags } from '../lab/flags';
 import { metrics } from '../lab/metrics';
 import { trackMarker, trackSpan } from '../lab/perf-tracks';
 import { rankProducts } from '../rank/rank';
@@ -49,6 +49,7 @@ export class GenUIController {
       rendering = true;
       const t0 = performance.now();
       this.renderer.render(this.state);
+      if (cpu.factor > 1) void this.root.offsetHeight; // con CPU simulada, el estilo/layout también cuenta
       burn(performance.now() - t0);
       trackSpan('Render', flags.keyed ? 'patch por clave' : 'innerHTML', t0, performance.now(), flags.keyed ? 'secondary' : 'error');
       rendering = false;
@@ -58,6 +59,7 @@ export class GenUIController {
       if (!flags.frame) {
         const t0 = performance.now();
         this.renderer.render(this.state);
+        if (cpu.factor > 1) void this.root.offsetHeight;
         burn(performance.now() - t0);
         trackSpan('Render', flags.keyed ? 'patch por clave' : 'innerHTML', t0, performance.now(), flags.keyed ? 'secondary' : 'error');
         return;

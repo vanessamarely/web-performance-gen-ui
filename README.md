@@ -56,6 +56,7 @@ Un asistente de compras para el mercado de artesanías, café y cacao de Guatema
 
 Resultados con el mismo stream (`/compare.html`): CLS 0,106 → 0,012, **23.546 → 338 nodos creados**, parseo 17 ms → 1,2 ms, 210 → 8 renders.
 
+- **Saltos visibles**: cada layout shift se marca en rojo sobre el elemento que se movió, y los frames congelados (> 100 ms) muestran un aviso. `/compare` usa **CPU 4×** por defecto y muestra cuántas veces mejor sale la versión arreglada.
 - **HUD** fijo: CLS, INP, LoAF (con script), nodos creados, tamaño del DOM, ms de parseo, renders, soft navs y el LCP de la soft navigation (Chrome 151+).
 - **Pistas propias** en Performance (`Mercadito · GenUI`: Stream, Parser, Render, Ranking) con la Extensibility API — [`perf-tracks.ts`](demo/src/lab/perf-tracks.ts).
 - **WebMCP**: 5 tools (`generar_resultados`, `abrir_producto`, `ordenar_por_recomendacion`, `configurar_laboratorio`, `leer_metricas`) si el navegador trae `navigator.modelContext`; si no, quedan en `window.mercadito`.

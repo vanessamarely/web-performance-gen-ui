@@ -284,20 +284,24 @@ export const SLIDES: SlideContent[] = [
     section: S3,
     title: 'Parsea cada carácter una sola vez',
     summary: [
-      'JSON.parse del buffer completo en cada token = O(n²): con respuestas largas, el CPU se dispara.',
-      'Un parser incremental procesa cada carácter una vez (O(n)) y emite eventos: campo, ítem completo.',
-      'Renderiza por ítem completo, no por carácter.',
+      'La notación O dice cuánto crece el trabajo cuando crece la respuesta (n = caracteres que van llegando).',
+      'O(n²), releer todo: como releer el libro desde la página 1 cada vez que pasas de página. En Mercadito, 5 KB → 6,5 millones de caracteres leídos.',
+      'O(n), leer solo lo nuevo: un parser incremental recuerda dónde iba y solo convierte en datos cada producto cuando se completa (5 KB → 5 mil caracteres).',
+      'Se comprueba: los dos parsers dan el mismo JSON final, y el HUD y la pista Parser de DevTools muestran la diferencia de tiempo.',
     ],
     code: {
-      file: 'stream.ts',
-      text: `const parser = new IncrementalJSON();
-for await (const chunk of stream) {
-  for (const ev of parser.push(chunk)) {
-    if (ev.type === 'item') store.upsert(ev.path, ev.value);
-  }
-}`,
+      file: 'demo/src/genui/parsers.ts',
+      text: `// controller.ts · en cada pedazo del stream
+const { state, changed } = parser.push(chunk);
+if (changed) render(state);
+// ✗ NaiveParser.push
+this.buf += chunk;
+return JSON.parse(repair(this.buf));
+// ✓ IncrementalParser.push
+for (; this.pos < this.buf.length; this.pos++)
+  // ¿cerró un producto? → JSON.parse de ese trozo`,
     },
-    notes: 'En la demo, el contador "ms de parseo" muestra la diferencia con el interruptor.',
+    notes: 'Explica la notación O con el libro: no hace falta matemática, solo "¿el trabajo crece igual que la respuesta, o mucho más rápido?". El código es el real de Mercadito (demo/src/genui/parsers.ts): el interruptor "Parser incremental" cambia entre los dos. En la demo, el HUD "parseo" baja de ~35 ms a ~3 ms.',
     time: '11:30',
     inSummary: true,
   },

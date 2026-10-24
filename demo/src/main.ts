@@ -9,6 +9,7 @@ import { mountHud } from './lab/hud';
 import { metrics, resetMetrics, startObservers } from './lab/metrics';
 import { mountLab } from './lab/panel';
 import { registerTools } from './webmcp';
+import { startVisual } from './lab/visual';
 
 const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector<T>(s)!;
 const params = new URLSearchParams(location.search);
@@ -18,6 +19,7 @@ document.body.classList.toggle('embed', embed);
 const root = $('#genui');
 const ui = new GenUIController(root);
 startObservers(root);
+startVisual(); // saltos en rojo y avisos de congelamiento
 mountHud($('#hud'));
 const setLab = mountLab($('#lab'), $<HTMLButtonElement>('[data-lab-toggle]'), () => void 0);
 if (params.has('lab')) setLab(true);
@@ -43,7 +45,7 @@ function route() {
 function navigate(url: string) {
   // Conservamos ?preset, ?embed, ?tps… para que el laboratorio no cambie al navegar.
   const next = new URL(url, location.origin);
-  for (const k of ['preset', 'embed', 'tps', 'work', 'engine', 'lab', 'cpu']) if (params.has(k)) next.searchParams.set(k, params.get(k)!);
+  for (const k of ['preset', 'embed', 'tps', 'work', 'engine', 'lab', 'cpu', 'visual']) if (params.has(k)) next.searchParams.set(k, params.get(k)!);
   history.pushState({}, '', next);
   scrollTo({ top: 0 }); // una SPA también debe restaurar el scroll al navegar
   resetMetricsForView();

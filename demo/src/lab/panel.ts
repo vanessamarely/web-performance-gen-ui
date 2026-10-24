@@ -2,6 +2,7 @@
 // cómo verlo en DevTools, qué preguntarle a AI assistance y qué pedirle a tu agente (DevTools MCP).
 import { FLAG_META, cpu, flags, onFlags, setAll, setFlag, type Flags } from './flags';
 import { metrics } from './metrics';
+import { visual } from './visual';
 
 const GUIDE: Record<keyof Flags, { devtools: string[]; ai: string; agent: string }> = {
   reserve: {
@@ -62,6 +63,7 @@ export function mountLab(panel: HTMLElement, toggle: HTMLButtonElement, onChange
       <label class="cpu">CPU simulada <select data-cpu>${[1, 4, 6]
         .map((f) => `<option value="${f}" ${cpu.factor === f ? 'selected' : ''}>${f}×${f === 1 ? ' (sin simular)' : ''}</option>`)
         .join('')}</select><small>Mejor: DevTools → Performance → CPU 4× o nivel calibrado.</small></label>
+      <label class="cpu"><span>Mostrar saltos y congelamientos</span><input type="checkbox" data-visual ${visual.on ? 'checked' : ''} /></label>
       <ol class="flags">${FLAG_META.map(
         (f) => `<li>
           <div class="flag-row">
@@ -85,6 +87,8 @@ export function mountLab(panel: HTMLElement, toggle: HTMLButtonElement, onChange
   panel.addEventListener('change', (e) => {
     const sel = (e.target as HTMLElement).closest<HTMLSelectElement>('[data-cpu]');
     if (sel) cpu.factor = Number(sel.value);
+    const vis = (e.target as HTMLElement).closest<HTMLInputElement>('[data-visual]');
+    if (vis) visual.on = vis.checked;
   });
   panel.addEventListener('click', async (e) => {
     const t = e.target as HTMLElement;

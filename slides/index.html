@@ -305,15 +305,15 @@ pinta primero el estado "ordenando…".</pre>
           <p class="eyebrow">// Extensibility API del panel Performance</p>
           <h2 class="title">Tu UI generativa como <span class="hl">pistas en Performance</span></h2>
           <div class="grid-2" style="grid-template-columns: 1.1fr 0.9fr; align-items: start">
-            <div class="code">
-              <div class="bar"><span>perf-tracks.ts</span><span>user timing + detail.devtools</span></div>
+            <div class="code" data-focus='[["1", "1 · Anota la hora justo antes del trabajo."], ["2", "2 · Haz tu trabajo de siempre: aquí, leer un pedazo del stream."], ["3-4", "3 · performance.measure crea un bloque en el trace, de start a end."], ["5-8", "4 · detail.devtools elige la fila (track), el grupo y el color en DevTools."], ["9", "5 · Datos extra que se ven al pasar el mouse sobre el bloque."]]'>
+              <div class="bar"><span>demo/src/lab/perf-tracks.ts</span><span>se llama en genui/controller.ts</span></div>
 <pre><span class="k">const</span> start = performance.<span class="f">now</span>();
 <span class="f">parseChunk</span>(chunk);
 performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
   start, end: performance.<span class="f">now</span>(),
   <span class="mark">detail: { devtools: {</span>
     dataType: <span class="s">'track-entry'</span>,
-    track: <span class="s">'Parser'</span>, trackGroup: <span class="s">'Mercadito · GenUI'</span>,
+    track: <span class="s">'Parser'</span>, trackGroup: <span class="s">'Mercadito'</span>,
     color: <span class="s">'tertiary'</span>,
     properties: [[<span class="s">'tokens'</span>, <span class="s">'128'</span>]],
   } },
@@ -345,7 +345,7 @@ performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
           <p class="eyebrow">// Contrato primero</p>
           <h2 class="title">Datos, no HTML: <span class="hl">catálogo + schema</span></h2>
           <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start">
-            <div class="code sm">
+            <div class="code sm" data-focus='[["1-3", "El schema es el contrato: el modelo solo puede devolver este JSON."], ["4", "Primero el hero: es lo más visible, así el LCP llega pronto."], ["5-7", "Luego la grilla: máximo 6 productos, de un catálogo cerrado."], ["8-9", "Al final el detalle: comparativa y consejos."], ["12", "Se lo pasas al modelo: Prompt API o Gemini API."]]'>
               <div class="bar"><span>schema.ts</span><span>orden pensado para streaming</span></div>
 <pre><span class="k">const</span> UI_SCHEMA = {
   type: <span class="s">'object'</span>,
@@ -376,7 +376,7 @@ performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
           <p class="eyebrow">// CLS ≈ 0 mientras el modelo escribe</p>
           <h2 class="title">Reserva el espacio <span class="hl">antes que el contenido</span></h2>
           <div class="grid-2" style="grid-template-columns: 0.95fr 1.05fr; align-items: start">
-            <div class="code">
+            <div class="code" data-focus='[["1-4", "Cada tarjeta nace con su altura final: nada empuja lo de abajo."], ["5-7", "La imagen reserva su caja con aspect-ratio antes de cargar."], ["8-10", "El texto largo se corta a 3 líneas: la altura no crece."], ["11-15", "Solo lo que ya terminó: el navegador se salta pintarlo si está fuera de pantalla."]]'>
               <div class="bar"><span>slots.css</span><span>altura final desde el inicio</span></div>
 <pre>.slot-product {
   <span class="mark">min-height: 312px;</span>
@@ -419,25 +419,32 @@ performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
         <div class="frame card-frame">
           <p class="eyebrow">// Streaming de JSON</p>
           <h2 class="title">Parsea cada carácter <span class="hl">una sola vez</span></h2>
-          <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start">
+          <p class="lead perf-def"><b>Notación O</b>: cuánto crece el trabajo cuando crece la respuesta.</p>
+          <div class="grid-2" style="grid-template-columns: 1fr 1.05fr; align-items: start">
             <div class="stack">
-              <div class="duo reveal">
-                <div class="side bad" style="--i: 0"><span class="l">JSON.parse(buffer) en cada token</span><span class="n">O(n²)</span><span class="l">5 KB → ~6,5 M caracteres recorridos</span></div>
-                <div class="side good" style="--i: 1"><span class="l">Parser incremental</span><span class="n">O(n)</span><span class="l">5 KB → 5 KB recorridos</span></div>
+              <div class="bigo reveal">
+                <div class="bigo-row bad" style="--i: 0">
+                  <div class="bars" aria-hidden="true"><i style="--h: 1"></i><i style="--h: 2"></i><i style="--h: 3"></i><i style="--h: 4"></i><i style="--h: 5"></i><i style="--h: 6"></i></div>
+                  <div><b>O(n²) · releer todo</b><span>Como releer el libro desde la página 1 cada vez que pasas de página.</span><span class="num">5 KB → <b>6,5 millones</b> de caracteres leídos</span></div>
+                </div>
+                <div class="bigo-row good" style="--i: 1">
+                  <div class="bars" aria-hidden="true"><i style="--h: 1"></i><i style="--h: 1"></i><i style="--h: 1"></i><i style="--h: 1"></i><i style="--h: 1"></i><i style="--h: 1"></i></div>
+                  <div><b>O(n) · leer solo lo nuevo</b><span>Con un separador: sigues donde te quedaste.</span><span class="num">5 KB → <b>5 mil</b> caracteres leídos</span></div>
+                </div>
               </div>
-              <p class="lead" style="font-size: 22px">Emite eventos (<code>field</code>, <code>item</code>) y renderiza por <span class="hl">ítem completo</span>, no por carácter.</p>
+              <p class="verify mono small"><b>¿Cómo se comprueba?</b> Mismo JSON final con los dos parsers; el HUD “parseo” y la pista <i>Parser</i> de DevTools muestran la diferencia.</p>
             </div>
-            <div class="code">
-              <div class="bar"><span>stream.ts</span><span>~120 líneas sin dependencias</span></div>
-<pre><span class="k">const</span> parser = <span class="k">new</span> <span class="f">IncrementalJSON</span>();
-<span class="k">for await</span> (<span class="k">const</span> chunk <span class="k">of</span> stream) {
-  <span class="k">for</span> (<span class="k">const</span> ev <span class="k">of</span> parser.<span class="f">push</span>(chunk)) {
-    <span class="k">if</span> (ev.type === <span class="s">'item'</span>)
-      store.<span class="f">upsert</span>(ev.path, ev.value);
-  }
-}
-<span class="c">// ✗ lo que NO hacer:</span>
-<span class="c">// buffer += chunk; ui = repair(JSON.parse(buffer))</span></pre>
+            <div class="code sm" data-focus='[["1-3", "Esto corre en la demo cada vez que llega un pedazo del stream."], ["4-6", "✗ Ingenuo: pega el pedazo y vuelve a leer TODO desde el inicio."], ["7-8", "✓ Incremental: recuerda en qué posición iba y solo lee lo nuevo."], ["9", "Cuando un producto se completa, solo ese trozo se convierte en datos."]]'>
+              <div class="bar"><span>demo/src/genui/parsers.ts</span><span>código real de Mercadito</span></div>
+<pre><span class="c">// controller.ts · en cada pedazo del stream</span>
+<span class="k">const</span> { state, changed } = parser.<span class="f">push</span>(chunk);
+<span class="k">if</span> (changed) <span class="f">render</span>(state);
+<span class="c">// ✗ NaiveParser.push</span>
+<span class="k">this</span>.buf += chunk;
+<span class="k">return</span> JSON.<span class="f">parse</span>(<span class="f">repair</span>(<span class="k">this</span>.buf));
+<span class="c">// ✓ IncrementalParser.push</span>
+<span class="k">for</span> (; <span class="k">this</span>.pos &lt; <span class="k">this</span>.buf.length; <span class="k">this</span>.pos++)
+  <span class="c">// ¿cerró un producto? → JSON.parse de ese trozo</span></pre>
             </div>
           </div>
         </div>
@@ -450,7 +457,7 @@ performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
           <p class="eyebrow">// 70 tokens/s ≠ 70 renders/s</p>
           <h2 class="title">Un render por frame y <span class="hl">cede el hilo</span></h2>
           <div class="grid-2" style="grid-template-columns: 1.05fr 0.95fr; align-items: start">
-            <div class="code">
+            <div class="code" data-focus='[["2-4", "Cada token solo actualiza los datos y pide un frame (una sola vez)."], ["6-7", "Una vez por frame, el navegador pinta…"], ["8-9", "…todo lo que cambió, por partes…"], ["10", "…y cede el hilo entre partes: si hubo un clic, se atiende ya."]]'>
               <div class="bar"><span>scheduler.ts</span><span>rAF + scheduler.yield()</span></div>
 <pre><span class="k">let</span> dirty = <span class="k">false</span>;
 <span class="k">function</span> <span class="f">onToken</span>(ev) {
@@ -489,7 +496,7 @@ performance.<span class="f">measure</span>(<span class="s">'parse'</span>, {
           <p class="eyebrow">// Streaming de HTML nativo · experimental</p>
           <h2 class="title">Declarative <span class="hl">Partial Updates</span></h2>
           <div class="grid-2" style="grid-template-columns: 1fr 1fr; align-items: start">
-            <div class="code">
+            <div class="code" data-focus='[["1-3", "El servidor manda primero el lugar vacío, con “Generando…”."], ["4", "La página ya se ve; el modelo sigue trabajando."], ["5-8", "Cuando llega el contenido, &lt;template for&gt; lo pone en su lugar. Sin JavaScript."]]'>
               <div class="bar"><span>respuesta.html</span><span>out-of-order · Chrome 150</span></div>
 <pre>&lt;ul id=<span class="s">"productos"</span>&gt;
   <span class="mark">&lt;?start name="productos"&gt;</span>Generando…&lt;?end&gt;
@@ -539,7 +546,7 @@ res.body
               </div>
               <div class="box yellow"><h3>Y además…</h3><p>Se conserva el foco, el hover y las imágenes ya decodificadas. Lo que cambia de orden se anima con View Transitions.</p></div>
             </div>
-            <div class="code">
+            <div class="code" data-focus='[["1", "Un mapa: cada producto, por su id, tiene un solo nodo."], ["4-5", "Si el producto es nuevo, su nodo se crea una sola vez."], ["6", "Si ya existe, solo se cambia el texto."], ["9-10", "Si cambia el orden, se mueve con una animación."]]'>
               <div class="bar"><span>keyed.ts</span><span>actualiza solo lo que cambió</span></div>
 <pre><span class="k">const</span> nodes = <span class="k">new</span> <span class="f">Map</span>&lt;<span class="p">string</span>, <span class="p">HTMLElement</span>&gt;();
 
@@ -611,7 +618,7 @@ grid.<span class="f">startViewTransition</span>?.(() =&gt; <span class="f">sortC
           <p class="eyebrow">// Interacción + cambio de URL + pintura visible</p>
           <h2 class="title">La UI generativa también navega: <span class="hl">mide las soft navs</span></h2>
           <div class="grid-2" style="grid-template-columns: 1.1fr 0.9fr; align-items: start">
-            <div class="code">
+            <div class="code" data-focus='[["1-4", "Avisa cada vez que la app cambia de vista sin recargar."], ["6-11", "Mide la pintura de esa vista (su LCP), ligada al clic que la provocó."]]'>
               <div class="bar"><span>soft-navs.ts</span><span>Chrome 151+</span></div>
 <pre><span class="k">new</span> <span class="f">PerformanceObserver</span>((list) =&gt; {
   <span class="k">for</span> (<span class="k">const</span> nav <span class="k">of</span> list.<span class="f">getEntries</span>())

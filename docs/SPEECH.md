@@ -19,6 +19,7 @@ Hilo de toda la charla, en una frase: **"La IA ya no responde texto, responde in
 - Laptop: tecla **P** → consola de presentadora → **Iniciar** el cronómetro al decir la primera palabra.
 - Pestañas listas: Mercadito `?preset=broken&lab`, `/compare.html`, DevTools abierto en Performance (CPU 4×), terminal con tu agente y `chrome-devtools-mcp`.
 - Plan B: los clips del slide de demo se reproducen sin red; `?cpu=4` si no puedes usar DevTools.
+- **Slides con código (modo foco):** el bloque avanza solo, una idea a la vez, con la explicación abajo. Con **↓ / ↑** o un clic sobre el código lo controlas tú; **← / →** siguen cambiando de slide. Lee la frase del recuadro amarillo: está escrita para quien no programa.
 
 ---
 
@@ -117,7 +118,7 @@ Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigat
 
 ### 12 · Pistas propias ⏱ 8:30
 
-**Di:** "Un truco que les recomiendo: con `performance.measure` y un objeto `detail.devtools`, sus etapas aparecen como pistas en el panel Performance: Stream, Parser, Render. Ganan dos veces: ustedes ven 'parse' en vez de un mar de 'Function call', y la IA de DevTools y sus agentes también leen esos nombres. Y casi no cuesta nada: si DevTools no está abierto, son solo marcas de User Timing."
+**Di (sigue el modo foco, 5 pasos):** "¿Dónde va este código? Dentro de su app, justo alrededor del trabajo que quieren ver; en Mercadito está en `demo/src/lab/perf-tracks.ts` y se llama desde el controlador del stream. Paso a paso: uno, anotan la hora antes del trabajo; dos, hacen su trabajo de siempre; tres, `performance.measure` crea un bloque en el trace desde esa hora hasta ahora; cuatro, `detail.devtools` elige en qué fila, grupo y color aparece en DevTools; cinco, datos extra que se ven al pasar el mouse. Resultado: con `performance.measure` y `detail.devtools`, sus etapas aparecen como pistas en el panel Performance: Stream, Parser, Render. Ganan dos veces: ustedes ven 'parse' en vez de un mar de 'Function call', y la IA de DevTools y sus agentes también leen esos nombres. Y casi no cuesta nada: si DevTools no está abierto, son solo marcas de User Timing."
 
 ---
 
@@ -149,9 +150,17 @@ Y lo nuevo de 2026, que nos importa mucho para UI generativa: las **soft navigat
 
 ### 17 · Parsea una sola vez ⏱ 11:30
 
-**Di:** "El error más común: cada vez que llega un token, concatenas al buffer y haces `JSON.parse` de **todo**, 'reparando' el JSON incompleto. Eso es O(n²): en Mercadito, una respuesta de 5 KB termina recorriendo unos 6,5 millones de caracteres. La alternativa es un **parser incremental**: recorre cada carácter **una sola vez** y emite eventos cuando algo se completa, 'llegó un producto completo'. Y renderizas por ítem completo, no por carácter."
+**Di:** "Aquí aparece algo que quizá nunca vieron en una charla de frontend: la **notación O**. No es matemática difícil; responde una sola pregunta: **cuando la respuesta crece, ¿el trabajo crece igual o mucho más rápido?** La *n* es la cantidad de caracteres que van llegando del modelo.
 
-**Clave:** O(n²) vs O(n); cifra de la demo (5 KB → 6,5 M caracteres).
+Imaginen que leen un libro y, cada vez que pasan de página, **vuelven a leer desde la página 1**. Página 1: leen 1. Página 2: leen 2. Página 3: leen 3… El trabajo total crece como las barras rojas: eso es **O(n²)**. Es lo que pasa cuando, en cada token, juntamos todo lo recibido y hacemos `JSON.parse` de *todo* otra vez. En Mercadito, una respuesta de 5 KB termina leyendo **6,5 millones de caracteres**.
+
+Ahora pongan un separador: siguen donde se quedaron. Cada página se lee una sola vez, las barras verdes son todas iguales: eso es **O(n)**. 5 KB, 5 mil caracteres.
+
+Y esto no es teoría: es el código real de la demo (sigue el modo foco). En cada pedazo del stream llamamos `parser.push(chunk)` y solo renderizamos si algo cambió. La versión ingenua pega el pedazo y relee todo; la incremental recuerda en qué posición iba y, cuando un producto se cierra, convierte en datos solo ese trozo.
+
+¿Cómo lo comprobamos? Los dos parsers producen exactamente el mismo JSON final, lo probamos, y en la demo el HUD de 'parseo' y la pista *Parser* de DevTools muestran la diferencia de tiempo."
+
+**Clave:** la pregunta de la notación O; el libro (releer vs. separador); 6,5 millones vs. 5 mil; es el código real y se comprueba.
 
 ### 18 · Un render por frame ⏱ 12:30
 
@@ -211,8 +220,8 @@ Un dato curioso que encontré preparando la demo: si recreas **toda** la vista c
 
 **Di (intro, 20 s):** "Esto es Mercadito: un asistente de compras generativo para artesanías, café y cacao de Guatemala. Los productos y precios son ficticios. Tiene un laboratorio con cinco interruptores, uno por cada villano, y un HUD abajo que mide en vivo CLS, INP, LoAF, nodos creados, milisegundos de parseo y soft navigations."
 
-**1. Comparación, 1 min.** Abre `/compare.html` → **Generar en ambos**.
-"Mismo stream, mismo prompt, dos renderers. Miren la tabla: nodos creados, renders, parseo, CLS."
+**1. Comparación, 1 min.** Abre `/compare` (ya viene con **CPU 4×**, como un celular de gama media) → **Generar en ambos**.
+"Mismo stream, mismo prompt, dos renderers, misma CPU. Miren los **recuadros rojos**: cada uno es un salto de layout, y la flecha dice cuántos píxeles se movió. A la derecha casi no hay. Y la tabla dice cuántas veces mejor: unas **66 veces menos nodos**, unas **12 veces menos renders** y el CLS baja de unos 0,17 a 0,02." Si alguien pregunta por qué en tu laptop casi no se nota: "porque mi laptop es muy rápida; por eso DevTools tiene CPU 4×: el usuario real tiene un celular de gama media".
 
 **2. Medir el modo roto con DevTools, 3 min.** Mercadito con `?preset=broken` y DevTools en Performance.
 - ⏺ Grabar → *"regalo de café bajo Q200"* → Generar → Detener.
@@ -222,10 +231,10 @@ Un dato curioso que encontré preparando la demo: si recreas **toda** la vista c
 
 **3. Hilo bloqueado, 2 min.** CPU 4×. Genera de nuevo y, mientras genera, haz clic en **♡ Guardar** de una tarjeta.
 - "Con `innerHTML` el botón se recrea y mi clic se pierde."
-- Enciende **Parser incremental**, **Un render por frame** y **Claves estables**: "de cientos de renders y miles de nodos a una decena y unos cientos".
+- Enciende **Parser incremental**, **Un render por frame** y **Claves estables**: "de cientos de renders y miles de nodos a una decena y unos cientos". Si aparece el aviso amarillo **"La página se congeló X ms"**, léelo en voz alta: es un Long Animation Frame.
 
 **4. INP, 2 min.** Con todo roto, clic en **Ordenar por recomendación**.
-- "El HUD marca INP en rojo." Muestra el insight **INP breakdown**: "casi todo es *processing duration*, nuestro ranking en el hilo principal".
+- "El HUD marca INP en rojo y aparece el aviso de página congelada." Muestra el insight **INP breakdown**: "casi todo es *processing duration*, nuestro ranking en el hilo principal" (medido con CPU 4×: unos 1.160 ms).
 - Enciende **Ranking en un Worker**: "feedback inmediato, el cálculo va en un Worker y el reorden se anima con una View Transition".
 
 **5. Soft navigation y agente, 2 min.** Abre un producto: "el HUD cuenta la soft navigation y su LCP".
