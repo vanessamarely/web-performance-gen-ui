@@ -1,32 +1,35 @@
-# Verificar: medir antes y después
+# Verify: Measure Before and After
 
-Medir es parte del trabajo, no un extra. Usa siempre las mismas condiciones en el "antes" y el
-"después" (misma URL, mismo prompt o interacción, misma CPU), y repite cada medición al menos
-3 veces: reporta la mediana.
+Measurement is part of the work, not an optional extra. Keep conditions identical before and
+after (same URL, prompt or interaction, and CPU setting). Repeat each measurement at least three
+times and report the median.
 
-## Con Chrome DevTools MCP (agentes de código)
+## With Chrome DevTools MCP (Coding Agents)
 
-Configuración (Gemini CLI, Claude Code, Antigravity, Cursor…):
+Configuration (Gemini CLI, Claude Code, Antigravity, Cursor, and others):
 
 ```json
 { "mcpServers": { "chrome-devtools": { "command": "npx", "args": ["-y", "chrome-devtools-mcp@latest"] } } }
 ```
 
-Mide **las dos fases**: la carga de la página (los esqueletos deben estar desde el primer
-pintado) y la generación. Flujo típico para una UI que se genera en streaming:
+Measure **both phases**: page load (skeletons should be present at first paint) and content
+generation. A typical workflow for a streaming UI:
 
-1. `new_page` o `navigate_page` a la app (por ejemplo `http://localhost:5173`).
-2. `emulate` con `{ "cpuThrottlingRate": 4 }` (y red lenta si importa la carga).
-3. **CLS durante la generación:** `performance_start_trace` con `{ "reload": false, "autoStop": false }`
-   → dispara la generación (`fill`/`click` con los uid de `take_snapshot`) → espera a que termine
-   (`wait_for`) → `performance_stop_trace` → `performance_analyze_insight` con `CLSCulprits`.
-4. **INP de una interacción:** mismo patrón, pero la acción es el clic que quieres medir;
-   analiza `INPBreakdown` (input delay, processing duration, presentation delay).
-5. **Carga inicial:** `performance_start_trace` con `{ "reload": true }` → `LCPBreakdown`.
-6. Aplica el cambio y repite el mismo paso. Con `screencast_start`/`screencast_stop` puedes
-   grabar un video del antes y el después.
+1. Use `new_page` or `navigate_page` to open the app (for example, `http://localhost:5173`).
+2. Call `emulate` with `{ "cpuThrottlingRate": 4 }` (and slow network throttling if load matters).
+3. **CLS during generation:** call `performance_start_trace` with
+   `{ "reload": false, "autoStop": false }` → trigger generation (`fill`/`click` using the uids
+   from `take_snapshot`) → wait for it to finish (`wait_for`) → call `performance_stop_trace` →
+   analyze `CLSCulprits` with `performance_analyze_insight`.
+4. **INP for an interaction:** use the same pattern, but perform the click you want to measure;
+   analyze `INPBreakdown` (input delay, processing duration, presentation delay).
+5. **Initial load:** call `performance_start_trace` with `{ "reload": true }` → analyze
+   `LCPBreakdown`.
+6. Apply the change and repeat the same step. Use `screencast_start`/`screencast_stop` to record
+   before-and-after video if useful.
 
-Para leer métricas propias o confirmar valores, `evaluate_script` con un observador:
+To inspect custom metrics or verify values, use `evaluate_script` with a PerformanceObserver. For
+example, this logs layout shifts without recent input:
 
 ```js
 () => new Promise((resolve) => {
@@ -37,30 +40,47 @@ Para leer métricas propias o confirmar valores, `evaluate_script` con un observ
 })
 ```
 
-Las rutas de archivo (traces, videos) deben estar dentro de la carpeta de trabajo que el agente
-expone al servidor MCP.
+Trace and video file paths must be inside the workspace folder exposed to the MCP server.
 
-## Sin agente: panel Performance de Chrome DevTools
+## Without an Agent: Chrome DevTools Performance Panel
 
-1. DevTools → **Performance** → CPU **4×** (o un nivel de CPU calibrado).
-2. **Live metrics** muestra LCP, INP y CLS locales al interactuar (y datos de campo de CrUX si
-   la URL es pública).
-3. ⏺ Grabar → reproduce la generación o el clic → Detener.
-4. Revisa **Insights**: *Layout shift culprits*, *INP breakdown*, *LCP breakdown*; los frames
-   rayados en **Main** son Long Animation Frames.
-5. Clic derecho en un insight o evento → **Ask AI** para una explicación con el contexto del trace.
-6. Rendering (⋮ → More tools) → **Layout Shift Regions** para ver los saltos en vivo.
-7. More tools → **Performance monitor** para ver DOM Nodes y Layouts/sec mientras se genera.
+1. Open DevTools → **Performance** and set CPU throttling to **4×** (or choose a calibrated
+   preset).
+2. **Live Metrics** shows local LCP, INP, and CLS as you interact. CrUX field data may also be
+   available for public URLs.
+3. Click Record, reproduce generation or the interaction, then stop recording.
+4. Review **Insights**: *Layout shift culprits*, *INP breakdown*, and *LCP breakdown*. In the
+   **Frames** track, striped patterns indicate partially presented or dropped frames; they do not
+   identify LoAF entries by themselves.
+5. To inspect LoAF entries, run this in the Console while the page is active:
 
-## En campo (usuarios reales)
+   ```js
+   new PerformanceObserver((list) => {
+     console.table(list.getEntries().map((entry) => ({
+       startTime: entry.startTime,
+       duration: entry.duration,
+       blockingDuration: entry.blockingDuration,
+       scripts: entry.scripts?.map((script) => script.sourceFunctionName || script.invoker).join(', '),
+     })));
+   }).observe({ type: 'long-animation-frame', buffered: true });
+   ```
 
-- RUM con web-vitals (ver `patrones.md` §8), segmentando navegación dura vs. suave.
-- CrUX / PageSpeed Insights para el p75 público de la URL u origen. Las métricas con soft
-  navigations en CrUX son experimentales: no cambian las Core Web Vitals oficiales.
+   LoAF entries represent frames longer than 50 ms. Their script details help diagnose slow
+   rendering and interactions, but `duration` alone does not mean the entire frame blocked input;
+   inspect `blockingDuration` as well. The demo HUD also reports LoAF count and maximum duration.
+6. Right-click an insight or event → **Ask AI** for an explanation using trace context.
+7. Rendering (⋮ → More tools) → **Layout Shift Regions** to see shifts live.
+8. More tools → **Performance monitor** to watch DOM Nodes and Layouts/sec during generation.
 
-## Umbrales (p75)
+## In the Field (Real Users)
 
-| Métrica | Bueno | Necesita mejorar | Malo |
+- Use RUM with web-vitals (see `patrones.md`, section 8), segmenting hard and soft navigations.
+- Use CrUX or PageSpeed Insights for public p75 data by URL or origin. CrUX metrics that include
+   soft navigations are experimental and do not change the stable Core Web Vitals.
+
+## Thresholds (p75)
+
+| Metric | Good | Needs improvement | Poor |
 |---|---|---|---|
 | LCP | ≤ 2,5 s | ≤ 4 s | > 4 s |
 | INP | ≤ 200 ms | ≤ 500 ms | > 500 ms |

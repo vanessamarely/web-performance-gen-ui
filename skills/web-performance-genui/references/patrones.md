@@ -1,25 +1,25 @@
-# Patrones de código
+# Code Patterns
 
-Ejemplos en TypeScript sin framework; tradúcelos al del proyecto (al final hay equivalencias).
-Cada uno resuelve una de las 10 reglas de `SKILL.md`.
+Framework-agnostic TypeScript examples; adapt them to the project's stack (framework equivalents
+are listed at the end). Each example supports one of the 10 rules in `SKILL.md`.
 
-## Contenido
+## Contents
 
-1. Contrato: catálogo + schema
-2. Reservar el espacio (CSS)
-3. Parsear una sola vez (NDJSON o parser incremental)
-4. Un render por frame + ceder el hilo
-5. Claves estables + View Transitions
-6. Trabajo pesado en un Worker
-7. Estado fuera del render
-8. Soft navigations y RUM
-9. Pistas propias en el panel Performance
-10. Equivalencias por framework
+1. Data contract: catalog + schema
+2. Reserve space (CSS)
+3. Parse once (NDJSON or incremental parser)
+4. One render per frame + yield to the browser
+5. Stable keys + View Transitions
+6. Heavy work in a Worker
+7. State outside rendering
+8. Soft navigations and RUM
+9. Custom tracks in the Performance panel
+10. Framework equivalents
 
-## 1. Contrato: catálogo + schema
+## 1. Data Contract: Catalog + Schema
 
 ```ts
-// El orden de las propiedades es el orden del streaming: lo visible primero (LCP).
+// Property order determines streaming order: visible content first (LCP).
 export const UI_SCHEMA = {
   type: 'object',
   properties: {
@@ -33,38 +33,38 @@ export const UI_SCHEMA = {
     product: { type: 'object', properties: { id: { type: 'string' }, reason: { type: 'string' } }, required: ['id'] },
   },
 } as const;
-// Valida que cada `id` exista en tu catálogo real antes de pintarlo (grounding).
+// Validate each `id` against your actual catalog before rendering it (grounding).
 ```
 
-## 2. Reservar el espacio
+## 2. Reserve Space
 
 ```css
 .slot-card { min-height: 320px; contain: layout paint; }
 .slot-card img { width: 100%; height: auto; aspect-ratio: 4 / 3; }
 .slot-card .reason { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
-/* Banners tardíos: su espacio existe desde el primer frame. */
+/* Late banners: reserve their space from the first frame. */
 .slot-promo { min-height: 56px; }
-/* Solo para secciones TERMINADAS y fuera de pantalla. */
+/* Only for completed sections that are outside the viewport. */
 .section-done { content-visibility: auto; contain-intrinsic-size: auto 600px; }
 ```
 
-Pinta esqueletos con la misma caja que tendrá el componente lleno y **rellena ese mismo nodo**
-cuando llegue el dato (no lo reemplaces por otro de distinto tamaño).
+Render skeletons with the same dimensions as the completed component and **fill the same node**
+when data arrives (do not replace it with a differently sized node).
 
-La reserva tiene que estar **en el primer pintado**: escribe los esqueletos en el HTML inicial,
-o da a cada contenedor su altura final en CSS. Si la página carga vacía y luego un script crea
-los slots, todo lo de abajo se mueve y eso cuenta como CLS de carga:
+The space must be reserved **at first paint**: put skeletons in the initial HTML or give each
+container its final height in CSS. If the page loads empty and a script creates the slots later,
+everything below moves and contributes to load CLS:
 
 ```css
-/* El contenedor ya mide lo que medirán 6 tarjetas, aunque aún no existan. */
+/* The container reserves the height of six cards, even before they exist. */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; min-height: calc(2 * 320px + 16px); }
 .compare { min-height: 300px; }
 ```
 
-## 3. Parsear una sola vez
+## 3. Parse Once
 
-La forma más simple: pide al modelo **un objeto JSON por línea** (NDJSON). Cada línea se parsea
-una vez cuando está completa.
+The simplest option is to request **one JSON object per line** (NDJSON). Parse each line once,
+when it is complete.
 
 ```ts
 export async function* readNDJSON<T>(stream: ReadableStream<BufferSource>): AsyncGenerator<T> {
@@ -85,10 +85,11 @@ export async function* readNDJSON<T>(stream: ReadableStream<BufferSource>): Asyn
 }
 ```
 
-Si el formato debe ser un único objeto JSON, usa un parser incremental que recuerde su posición
-(`pos`) y emita cada ítem cuando se cierra su `}`; no vuelvas a recorrer lo ya leído.
+If the format must be one JSON object, use an incremental parser that remembers its position
+(`pos`) and emits each item when its closing `}` arrives. Do not scan already processed input
+again.
 
-## 4. Un render por frame + ceder el hilo
+## 4. One Render per Frame + Yield to the Browser
 
 ```ts
 type Change = () => void;
@@ -110,13 +111,13 @@ async function flush() {
   const batch = queue.splice(0);
   for (let i = 0; i < batch.length; i++) {
     batch[i]();
-    // Cada ~8 cambios cede el hilo: si hubo un clic, se atiende ya (INP).
+    // Yield about every eight changes so pending input can be handled (INP).
     if (i % 8 === 7) await yieldToMain();
   }
 }
 ```
 
-Encontrar culpables:
+Inspect long animation frames (LoAF):
 
 ```ts
 type LoAF = PerformanceEntry & { scripts?: { sourceFunctionName: string; duration: number }[] };
@@ -128,7 +129,7 @@ new PerformanceObserver((list) => {
 }).observe({ type: 'long-animation-frame', buffered: true });
 ```
 
-## 5. Claves estables + View Transitions
+## 5. Stable Keys + View Transitions
 
 ```ts
 interface Item { id: string; title: string; reason: string }
@@ -145,7 +146,7 @@ export function upsert(list: HTMLElement, item: Item) {
     nodes.set(item.id, el);
   }
   const [h3, p] = el.children as unknown as [HTMLElement, HTMLElement];
-  if (h3.textContent !== item.title) h3.textContent = item.title; // textContent, nunca HTML del modelo
+  if (h3.textContent !== item.title) h3.textContent = item.title; // textContent, never model-generated HTML
   if (p.textContent !== item.reason) p.textContent = item.reason;
 }
 
@@ -157,19 +158,19 @@ export function reorder(list: HTMLElement, ids: string[]) {
 }
 ```
 
-## 6. Trabajo pesado en un Worker
+## 6. Heavy Work in a Worker
 
 ```ts
 // rank.worker.ts
 self.onmessage = (e: MessageEvent<{ ids: string[] }>) => {
-  const ranked = [...e.data.ids].sort(); // tu cálculo real aquí
+  const ranked = [...e.data.ids].sort(); // Replace with your actual calculation.
   self.postMessage(ranked);
 };
 
 // main.ts
 const worker = new Worker(new URL('./rank.worker.ts', import.meta.url), { type: 'module' });
 export function rankInWorker(ids: string[], button: HTMLButtonElement): Promise<string[]> {
-  button.textContent = 'Ordenando…'; // feedback en el mismo frame del clic
+  button.textContent = 'Sorting…'; // Give feedback in the same frame as the click.
   button.disabled = true;
   return new Promise((resolve) => {
     worker.onmessage = (e: MessageEvent<string[]>) => {
@@ -181,18 +182,18 @@ export function rankInWorker(ids: string[], button: HTMLButtonElement): Promise<
 }
 ```
 
-## 7. Estado fuera del render
+## 7. State Outside Rendering
 
 ```ts
 type Listener = () => void;
 export class StreamStore<T extends { id: string }> {
-  private draft = new Map<string, T>();   // lo que va llegando
-  private committed = new Map<string, T>(); // lo validado (y lo anterior sigue visible)
+  private draft = new Map<string, T>();   // Incoming data.
+  private committed = new Map<string, T>(); // Validated data; previous content stays visible.
   private listeners = new Map<string, Set<Listener>>();
 
   upsertDraft(item: T) {
     this.draft.set(item.id, item);
-    this.listeners.get(item.id)?.forEach((l) => l()); // solo quien mira ese id
+    this.listeners.get(item.id)?.forEach((l) => l()); // Notify only subscribers to this id.
   }
   commit() {
     for (const [id, v] of this.draft) this.committed.set(id, v);
@@ -210,9 +211,9 @@ export class StreamStore<T extends { id: string }> {
 }
 ```
 
-Totales, filtros y orden se **derivan en código** a partir del store; no se los pidas al modelo.
+Derive totals, filters, and ordering **in code** from the store; do not ask the model to compute them.
 
-## 8. Soft navigations y RUM
+## 8. Soft Navigations and RUM
 
 ```ts
 import { onCLS, onINP, onLCP, type Metric } from 'web-vitals';
@@ -221,30 +222,33 @@ const send = (m: Metric) => navigator.sendBeacon('/rum', JSON.stringify({ name: 
 for (const on of [onLCP, onINP, onCLS]) on(send, { reportSoftNavs: true });
 ```
 
-`reportSoftNavs` requiere una versión de web-vitals con soporte de soft navigations (v6 o su
-build `soft-navs`); revisa la documentación de la versión instalada. Sin librería: observa
-`soft-navigation` y asocia cada `interaction-contentful-paint` a su vista por `interactionId`.
+`reportSoftNavs` requires a web-vitals version with soft-navigation support (v6 or its
+`soft-navs` build); check the documentation for the installed version. Without the library,
+observe `soft-navigation` and associate each `interaction-contentful-paint` with its view by
+`interactionId`. These APIs are currently supported in Chromium-based browsers, so feature-detect
+them and expect different coverage in other browsers.
 
-## 9. Pistas propias en el panel Performance
+## 9. Custom Tracks in the Performance Panel
 
 ```ts
 export function track(name: string, start: number, color: 'primary' | 'secondary' | 'tertiary' | 'error' = 'primary') {
   performance.measure(name, {
     start,
     end: performance.now(),
-    detail: { devtools: { dataType: 'track-entry', track: 'GenUI', trackGroup: 'Mi app', color, tooltipText: name } },
+    detail: { devtools: { dataType: 'track-entry', track: 'GenUI', trackGroup: 'My app', color, tooltipText: name } },
   });
 }
 // const t0 = performance.now(); render(); track('render', t0);
 ```
 
-Le da contexto a AI assistance de DevTools y a los agentes que leen el trace.
+In Chrome DevTools versions that support `detail.devtools`, this adds context for AI assistance
+and agents reading the trace. Without DevTools open, the measure remains a User Timing entry.
 
-## 10. Equivalencias por framework
+## 10. Framework Equivalents
 
-| Patrón | React | Angular | Vue |
+| Pattern | React | Angular | Vue |
 |---|---|---|---|
 | Claves estables | `key={item.id}` | `@for (… ; track item.id)` | `:key="item.id"` |
-| Suscripción fina | `useSyncExternalStore` por id | `signal`/`computed` por id, `OnPush` | `shallowRef` + `computed` por id |
-| Agrupar por frame | acumula y un solo `setState` en rAF | actualiza signals en rAF | actualiza en rAF; `nextTick` no basta |
-| Lista larga | `@tanstack/react-virtual` | CDK `cdk-virtual-scroll-viewport` | `vue-virtual-scroller` |
+| Fine-grained subscription | `useSyncExternalStore` per id | `signal`/`computed` per id, `OnPush` | `shallowRef` + `computed` per id |
+| Batch per frame | accumulate and call `setState` once in rAF | update signals in rAF | update in rAF; `nextTick` is not enough |
+| Long list | `@tanstack/react-virtual` | CDK `cdk-virtual-scroll-viewport` | `vue-virtual-scroller` |
