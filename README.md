@@ -6,18 +6,29 @@ Charla técnica para **DevFest Guatemala 2026** (track Web) de [Vanessa Aristiza
 
 30 minutos de charla, de los cuales 10 son demo. Misma estructura y paleta que [fluid-generative-ui](https://github.com/vanessamarely/fluid-generative-ui).
 
-| Carpeta | Qué es | URL local |
-|---|---|---|
-| [`slides/`](slides) | **Deck interactivo** (30 slides) + **consola de la presentadora** en `/presenter/` + **app de asistentes** en `/live/` | http://localhost:5173 |
-| [`demo/`](demo) | **Mercadito**: asistente de compras con UI generativa en streaming y **laboratorio de performance** (5 interruptores roto ↔ arreglado) | http://localhost:5174 |
+## En vivo
+
+| Qué | URL publicada |
+|---|---|
+| **Deck** (proyector, pantalla del evento 1680×672) | https://web-performance-gen-ui-slides.web.app/?presenter=1&screen=event |
+| **App de asistentes** (celular: notas, quitapenas, memoria en PDF) | https://web-performance-gen-ui-slides.web.app/live/ |
+| **Consola de la presentadora** | https://web-performance-gen-ui-slides.web.app/presenter/ |
+| **Demo Mercadito** | https://web-performance-gen-ui-demo.web.app |
+| **Demo roto vs. arreglado** (CPU 4×) | https://web-performance-gen-ui-demo.web.app/compare |
+| **Demo con el laboratorio abierto** | https://web-performance-gen-ui-demo.web.app/?preset=broken&lab |
+
+| Carpeta | Qué es | URL publicada | URL local |
+|---|---|---|---|
+| [`slides/`](slides) | **Deck interactivo** (30 slides) + **consola de la presentadora** en `/presenter/` + **app de asistentes** en `/live/` | https://web-performance-gen-ui-slides.web.app | http://localhost:5173 |
+| [`demo/`](demo) | **Mercadito**: asistente de compras con UI generativa en streaming y **laboratorio de performance** (5 interruptores roto ↔ arreglado) | https://web-performance-gen-ui-demo.web.app | http://localhost:5174 |
 
 ## Las tres versiones del deck
 
 | Versión | URL | Para qué |
 |---|---|---|
-| Proyector | `/?presenter=1` | El deck. Con sesión de presentadora publica el slide actual a los celulares. |
-| Consola | `/presenter/` (tecla **P** desde el deck) | En tu laptop: guion de cada slide, siguiente slide, cronómetro con ritmo vs. el guion, contadores y controles ←/→. Se comunica con el deck por `BroadcastChannel` (sin red). |
-| Asistentes | `/live/` (QR en el slide 2) | En el celular: el slide actual con sus ideas clave, notas, reacciones, preguntas, **Crea tu quitapenas** y la **memoria** descargable. |
+| Proyector | [`/?presenter=1`](https://web-performance-gen-ui-slides.web.app/?presenter=1) (agrega `&screen=event` en la pantalla de 1680×672) | El deck. Con sesión de presentadora publica el slide actual a los celulares. |
+| Consola | [`/presenter/`](https://web-performance-gen-ui-slides.web.app/presenter/) (tecla **P** desde el deck) | En tu laptop: guion de cada slide, siguiente slide, cronómetro con ritmo vs. el guion, contadores y controles ←/→. Se comunica con el deck por `BroadcastChannel` (sin red). |
+| Asistentes | [`/live/`](https://web-performance-gen-ui-slides.web.app/live/) (QR en el slide 2) | En el celular: el slide actual con sus ideas clave, notas, reacciones, preguntas, **Crea tu quitapenas** y la **memoria** descargable. |
 
 ### Notas que no se mueven mientras escribes
 
@@ -84,11 +95,11 @@ node scripts/record-clips.mjs
 
 ## Skill para tu agente de código
 
-[`skills/web-performance-genui`](skills/web-performance-genui) convierte lo de la charla en un **Agent Skill**: tu agente (Claude Code, Gemini CLI, Antigravity, Cursor…) aplica las 10 reglas cuando construye o revisa una UI que se pinta en streaming, y **mide antes y después** con Chrome DevTools MCP.
+El [Agent Skill `web-performance-genui`](skills/web-performance-genui/SKILL.md) convierte las prácticas de la charla en una guía reutilizable. Está escrito en inglés; tu agente (Claude Code, Gemini CLI, Antigravity, Cursor y otros) puede aplicarlo al construir o revisar interfaces con streaming y **medir antes y después** con Chrome DevTools MCP.
 
-- `SKILL.md`: cuándo usarlo, flujo de trabajo, las 10 reglas, antipatrones y formato de reporte.
-- `references/patrones.md`: patrones de código (todos compilan con TypeScript estricto) y equivalencias para React, Angular y Vue.
-- `references/verificar.md`: cómo medir con DevTools MCP o el panel Performance, y umbrales.
+- [`SKILL.md`](skills/web-performance-genui/SKILL.md): cuándo usarlo, flujo de trabajo, 10 reglas, antipatrones y formato para reportar resultados.
+- [`references/patrones.md`](skills/web-performance-genui/references/patrones.md): patrones TypeScript y equivalencias para React, Angular y Vue.
+- [`references/verificar.md`](skills/web-performance-genui/references/verificar.md): medición con DevTools MCP o el panel Performance, LoAF y umbrales.
 
 Instalación en Claude Code (para todos tus proyectos):
 
@@ -96,7 +107,7 @@ Instalación en Claude Code (para todos tus proyectos):
 git clone --depth 1 https://github.com/vanessamarely/web-performance-gen-ui /tmp/wpgu && mkdir -p ~/.claude/skills && cp -R /tmp/wpgu/skills/web-performance-genui ~/.claude/skills/
 ```
 
-Solo para un proyecto, copia la carpeta en `.claude/skills/` del proyecto. En agentes sin skills, usa el contenido de `SKILL.md` como `AGENTS.md`.
+Para un solo proyecto, copia la carpeta en `.claude/skills/` del proyecto. Si tu agente no admite skills, copia también `references/` junto al contenido de `SKILL.md` en su contexto, o incorpora las referencias relevantes en `AGENTS.md`.
 
 ## Correr en local
 
