@@ -155,13 +155,14 @@ export async function initLive(stage: DeckStage, sections: HTMLElement[]) {
       tiles.clear();
     }
     if (visible.length) wall.querySelector('.wall-empty')?.remove();
-    const keep = new Set(visible.slice(0, 48).map((d) => d.id));
+    const keep = new Set(visible.map((d) => d.id));
     for (const [id, t] of tiles) {
       if (keep.has(id)) continue;
       t.el.remove();
       tiles.delete(id);
     }
-    visible.slice(0, 48).forEach((d, i) => {
+    // Todos: el muro hace scroll (antes se cortaba en 48 y el resto no se veía).
+    visible.forEach((d, i) => {
       const sig = JSON.stringify([d.name, d.pena, d.opts, d.hidden]);
       let t = tiles.get(d.id);
       if (!t) {

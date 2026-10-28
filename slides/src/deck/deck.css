@@ -663,7 +663,9 @@ section[data-deck-active] .switch-row .tg::after { animation: tg-knob 5s ease-in
 .step-card code { font: 400 12.5px var(--mono); }
 
 /* ── Muro de quitapenas ─────────────────────────────── */
-.doll-wall { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; flex: 1; align-content: start; overflow: hidden; }
+/* Scroll propio (rueda, trackpad y touch): con muchos quitapenas el muro crece hacia abajo.
+   overscroll-behavior evita que el scroll "rebote" al slide; min-height: 0 deja que el flex lo limite. */
+.doll-wall { display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px; flex: 1 1 0; min-height: 0; align-content: start; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; scrollbar-width: thin; padding: 4px 4px 12px; }
 .doll-tile { position: relative; border: var(--lw) solid var(--line); border-radius: 16px; background: var(--surface); padding: 6px 6px 8px; display: grid; justify-items: center; gap: 2px; cursor: pointer; animation: pop 420ms cubic-bezier(0.2, 1.4, 0.4, 1) both; }
 .doll-tile svg { width: 100%; height: auto; max-height: 120px; }
 .doll-tile b { font-size: 13px; line-height: 1.1; text-align: center; overflow-wrap: anywhere; }
@@ -683,7 +685,9 @@ section[data-deck-active] .switch-row .tg::after { animation: tg-knob 5s ease-in
   .cover-title.md { font-size: 40px; }
   .cover-dolls { display: none; }
   .section-textile { position: relative; width: 100%; height: 160px; border-left: 0; }
-  .pipeline, .metric-cards, .villains, .steps, .doll-wall, .duo, .timeline { grid-template-columns: minmax(0, 1fr) !important; }
+  .pipeline, .metric-cards, .villains, .steps, .duo, .timeline { grid-template-columns: minmax(0, 1fr) !important; }
+  /* En el celular el slide entero hace scroll: el muro crece con su contenido (3 por fila). */
+  .doll-wall { grid-template-columns: repeat(3, minmax(0, 1fr)); flex: none; overflow: visible; padding: 0; }
   .stage { border-left-width: var(--lw); border-radius: var(--r-sm) !important; min-height: 0; }
   .villain, .step-card { min-height: 0; }
 }
